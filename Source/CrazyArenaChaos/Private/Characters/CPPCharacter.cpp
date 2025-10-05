@@ -11,6 +11,7 @@
 #include <EnhancedInputComponent.h>
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
+#include "Components/BoxComponent.h"
 
 ACPPCharacter::ACPPCharacter()
 {
@@ -128,21 +129,9 @@ void ACPPCharacter::PlayAttackMontage()
 	}
 }
 
-void ACPPCharacter::AttackStart()
-{
-	if (equippedWeapon)
-	{
-		equippedWeapon->StartColliders();
-	}
-}
-
 void ACPPCharacter::AttackEnd()
 {
 	actionState = EactionState::EAS_Unoccupied;
-	if (equippedWeapon)
-	{
-		equippedWeapon->EndColliders();
-	}
 }
 
 
@@ -165,5 +154,11 @@ void ACPPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Interact);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Attack);
 	}
+}
+
+void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (equippedWeapon && equippedWeapon->GetWeaponBoxComponent())
+		equippedWeapon->GetWeaponBoxComponent()->SetCollisionEnabled(CollisionEnabled);
 }
 

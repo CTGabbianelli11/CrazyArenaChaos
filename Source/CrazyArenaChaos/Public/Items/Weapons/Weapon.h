@@ -6,6 +6,7 @@
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
+class UBoxComponent;
 /**
  * 
  */
@@ -15,22 +16,30 @@ class CRAZYARENACHAOS_API AWeapon : public AItem
 	GENERATED_BODY()
 
 public:
+	AWeapon();
+
 	void Equip(USceneComponent* InParent, FName InSocketName);
 
-	UFUNCTION(BlueprintCallable)
-	void StartColliders();
-	UFUNCTION(BlueprintCallable)
-	void EndColliders();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void CollidersStartedEvent();
-	
-	UFUNCTION(BlueprintImplementableEvent)
-	void CollidersStoppedEvent();
 protected:
+	 virtual void BeginPlay() override;
+	 virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	 void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	 virtual void OnEndSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
-	 void OnEndSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	 UFUNCTION()
+	 void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UBoxComponent* WeaponBoxComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceStart;
 	
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceEnd;
+	
+public:
+	FORCEINLINE UBoxComponent* GetWeaponBoxComponent() const { return WeaponBoxComponent; }
 };
