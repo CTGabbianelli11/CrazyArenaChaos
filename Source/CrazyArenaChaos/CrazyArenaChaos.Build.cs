@@ -9,5 +9,8 @@ public class CrazyArenaChaos : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HairStrandsCore" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "NavigationSystem" });
+
     }
 }
