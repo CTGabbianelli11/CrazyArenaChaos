@@ -4,6 +4,7 @@
 #include "Enemy/Enemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "CrazyArenaChaos/DebugMacros.h"
 
 AEnemy::AEnemy()
 {
@@ -25,12 +26,17 @@ void AEnemy::BeginPlay()
 	
 }
 
+
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
-
+void AEnemy::GetHit(const FVector& impactPoint)
+{
+	DRAW_SPHERE(impactPoint);
+}
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
