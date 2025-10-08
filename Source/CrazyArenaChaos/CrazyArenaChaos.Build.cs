@@ -10,7 +10,7 @@ public class CrazyArenaChaos : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HairStrandsCore" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "NavigationSystem" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "NavigationSystem", "PCG" });
 
     }
 }
