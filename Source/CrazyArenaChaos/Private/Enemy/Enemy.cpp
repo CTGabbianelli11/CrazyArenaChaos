@@ -35,7 +35,7 @@ void AEnemy::Tick(float DeltaTime)
 }
 void AEnemy::GetHit(const FVector& impactPoint)
 {
-	DRAW_SPHERE(impactPoint);
+	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 }
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
