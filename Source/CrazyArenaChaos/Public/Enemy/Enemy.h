@@ -7,6 +7,8 @@
 #include "Interfaces/HitInterface.h"
 #include "Enemy.generated.h"
 
+class UAnimMontage;
+
 UCLASS()
 class CRAZYARENACHAOS_API AEnemy : public ACharacter,public IHitInterface
 {
@@ -19,9 +21,19 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit(const FVector& impectPoint) override;
+
+	/**
+Play montage functions
+*/
+	void PlayHitReactMontage(const FName& sectionName);
 protected:
 	virtual void BeginPlay() override;
-
+private:
+	/*
+*Animation Montages
+*/
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HitReactMontage;
 public:	
 
 };
