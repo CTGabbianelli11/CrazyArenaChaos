@@ -5,7 +5,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "CrazyArenaChaos/DebugMacros.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Animation/AnimMontage.h"
 
 AEnemy::AEnemy()
@@ -53,25 +52,6 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 	PlayHitReactMontage(FName("FromFront"));
 
-	const FVector Forward = GetActorForwardVector();
-	const FVector impactLowered(impactPoint.X,impactPoint.Y, GetActorForwardVector().Z);
-	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
-
-	//Forard * To hit = |Forward||ToHit| * cos(theta)
-	//Forward
-	const double CosTheta = FVector::DotProduct(Forward, ToHit);
-	//take inverse cos (arccosin) of cos(theta) to get theta
-	double Theta = FMath::Acos(CosTheta);
-	//convert from radians to degrees
-	Theta = FMath::RadiansToDegrees(Theta);
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Theta: %f"),Theta), false);
-
-	}
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 }
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
