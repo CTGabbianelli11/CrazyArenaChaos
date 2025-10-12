@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "CrazyArenaChaos/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimMontage.h"
 
 AEnemy::AEnemy()
@@ -90,8 +91,13 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	//{
 	//	Section = FName("FromBack");
 	//}
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->AddImpulse(ToHit* 100000.f);
+	//GetMesh()->AddImpulseAtLocation(ToHit*100000.f,GetActorLocation(),FName("Root"));
 
-	PlayHitReactMontage(Section);
+	//PlayHitReactMontage(Section);
+
 
 
 	if (GEngine)
