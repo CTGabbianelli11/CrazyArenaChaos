@@ -51,7 +51,6 @@ void AEnemy::Tick(float DeltaTime)
 void AEnemy::GetHit(const FVector& impactPoint)
 {
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
-	PlayHitReactMontage(FName("FromFront"));
 
 	const FVector Forward = GetActorForwardVector();
 	const FVector impactLowered(impactPoint.X,impactPoint.Y, GetActorLocation().Z);
@@ -72,6 +71,27 @@ void AEnemy::GetHit(const FVector& impactPoint)
 		Theta *= -1.f;
 	}
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+
+	FName Section("FromFront");
+	if(Theta >= -45.f && Theta < 45.f)
+	{
+		Section = FName("FromFront");
+	}
+	//Note : Uncomment when animations in montage are added
+	//else if( Theta >= -135.f && Theta < 45.f)
+	//{
+	//	Section = FName("FromLeft");
+	//}
+	//else if( Theta >= 45.f && Theta < 135.f)
+	//{
+	//	Section = FName("FromRight");
+	//}
+	//else
+	//{
+	//	Section = FName("FromBack");
+	//}
+
+	PlayHitReactMontage(Section);
 
 
 	if (GEngine)
