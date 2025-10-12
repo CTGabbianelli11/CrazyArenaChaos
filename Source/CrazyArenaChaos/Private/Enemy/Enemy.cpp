@@ -54,7 +54,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	PlayHitReactMontage(FName("FromFront"));
 
 	const FVector Forward = GetActorForwardVector();
-	const FVector impactLowered(impactPoint.X,impactPoint.Y, GetActorForwardVector().Z);
+	const FVector impactLowered(impactPoint.X,impactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
 
 	//Forard * To hit = |Forward||ToHit| * cos(theta)
@@ -64,6 +64,15 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	double Theta = FMath::Acos(CosTheta);
 	//convert from radians to degrees
 	Theta = FMath::RadiansToDegrees(Theta);
+
+	//if cross product points down theta is negative
+	FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	if (CrossProduct.Z < 0)
+	{
+		Theta *= -1.f;
+	}
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+
 
 	if (GEngine)
 	{
