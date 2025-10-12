@@ -70,7 +70,9 @@ void ACPPCharacter::Move(const FInputActionValue& Value)
 }
 void ACPPCharacter::Look(const FInputActionValue& Value)
 {
+
 	const FVector2D lookValue = Value.Get<FVector2D>();
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, lookValue.ToString(), false);
 	AddControllerYawInput(lookValue.X);
 	AddControllerPitchInput(-lookValue.Y);
 }
