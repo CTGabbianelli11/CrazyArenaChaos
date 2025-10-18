@@ -21,6 +21,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit(const FVector& impectPoint) override;
+	void DirectionalHitReact(const FVector& impactPoint);
 	UFUNCTION(BlueprintCallable)
 	void EnableRagdoll(FVector hitDirection);
 	/**

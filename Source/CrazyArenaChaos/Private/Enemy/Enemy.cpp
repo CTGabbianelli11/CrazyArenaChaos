@@ -53,8 +53,12 @@ void AEnemy::GetHit(const FVector& impactPoint)
 {
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 
+	DirectionalHitReact(impactPoint);
+}
+void AEnemy::DirectionalHitReact(const FVector& impactPoint)
+{
 	const FVector Forward = GetActorForwardVector();
-	const FVector impactLowered(impactPoint.X,impactPoint.Y, GetActorLocation().Z);
+	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
 
 	//Forard * To hit = |Forward||ToHit| * cos(theta)
@@ -74,7 +78,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 
 	FName Section("FromFront");
-	if(Theta >= -45.f && Theta < 45.f)
+	if (Theta >= -45.f && Theta < 45.f)
 	{
 		Section = FName("FromFront");
 	}
@@ -101,7 +105,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Theta: %f"),Theta), false);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta), false);
 
 	}
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
