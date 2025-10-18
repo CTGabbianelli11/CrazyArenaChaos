@@ -21,7 +21,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit(const FVector& impectPoint) override;
-
+	UFUNCTION(BlueprintCallable)
+	void EnableRagdoll(FVector hitDirection);
 	/**
 Play montage functions
 */
@@ -32,6 +33,7 @@ private:
 	/*
 *Animation Montages
 */
+
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* HitReactMontage;
 public:	

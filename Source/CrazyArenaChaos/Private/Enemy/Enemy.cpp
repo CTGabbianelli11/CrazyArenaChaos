@@ -91,13 +91,12 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	//{
 	//	Section = FName("FromBack");
 	//}
-	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->AddImpulse(ToHit* 100000.f);
+
 	//GetMesh()->AddImpulseAtLocation(ToHit*100000.f,GetActorLocation(),FName("Root"));
 
 	//PlayHitReactMontage(Section);
 
+	EnableRagdoll(ToHit);
 
 
 	if (GEngine)
@@ -107,6 +106,15 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	}
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+}
+void AEnemy::EnableRagdoll(FVector hitDirection)
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetCharacterMovement()->Deactivate();
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->AddImpulse(( - hitDirection * 100000.f)+FVector::UpVector*10000.f);
 }
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
