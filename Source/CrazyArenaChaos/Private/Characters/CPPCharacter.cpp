@@ -161,6 +161,9 @@ void ACPPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
 {
 	if (equippedWeapon && equippedWeapon->GetWeaponBoxComponent())
+	{
 		equippedWeapon->GetWeaponBoxComponent()->SetCollisionEnabled(CollisionEnabled);
+		equippedWeapon->ignoreActors.Empty();
+	}
 }
 

@@ -20,6 +20,7 @@ public:
 
 	void Equip(USceneComponent* InParent, FName InSocketName);
 
+	TArray<AActor*> ignoreActors;
 protected:
 	 virtual void BeginPlay() override;
 	 virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
@@ -39,6 +40,8 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
+
+
 	
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBoxComponent() const { return WeaponBoxComponent; }
