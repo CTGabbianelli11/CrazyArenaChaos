@@ -17,6 +17,9 @@ class CRAZYARENACHAOS_API AEnemy : public ACharacter,public IHitInterface,public
 
 public:
 	AEnemy();
+
+	UPROPERTY(EditAnywhere)
+	UClass* CurrencyToDrop;
 	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

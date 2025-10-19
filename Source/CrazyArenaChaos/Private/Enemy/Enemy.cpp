@@ -7,6 +7,7 @@
 #include "CrazyArenaChaos/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/Currency.h"
 #include "Animation/AnimMontage.h"
 
 AEnemy::AEnemy()
@@ -57,6 +58,15 @@ void AEnemy::GetHit(const FVector& impactPoint)
 }
 void AEnemy::CharacterDied()
 {
+	UWorld* World = GetWorld();
+	if (World && CurrencyToDrop)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, GetActorLocation().ToString(), false);
+
+		FVector location = GetActorLocation();
+		location.Z += 75.f;
+		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
+	}
 }
 void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 {
@@ -102,6 +112,9 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 	//GetMesh()->AddImpulseAtLocation(ToHit*100000.f,GetActorLocation(),FName("Root"));
 
 	//PlayHitReactMontage(Section);
+
+	//NOTE: Move to health logic later
+	CharacterDied();
 
 	EnableRagdoll(ToHit);
 
