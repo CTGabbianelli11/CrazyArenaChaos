@@ -55,6 +55,9 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 	DirectionalHitReact(impactPoint);
 }
+void AEnemy::CharacterDied()
+{
+}
 void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 {
 	const FVector Forward = GetActorForwardVector();
