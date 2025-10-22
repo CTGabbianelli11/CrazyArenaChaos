@@ -6,9 +6,11 @@
 #include "Components/CapsuleComponent.h"
 #include "CrazyArenaChaos/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Currency.h"
 #include "Animation/AnimMontage.h"
+#include "Components/AttributeComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -21,7 +23,7 @@ AEnemy::AEnemy()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
-
+	attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 }
 
 void AEnemy::PlayHitReactMontage(const FName& sectionName)
@@ -129,12 +131,19 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 }
 void AEnemy::EnableRagdoll(FVector hitDirection)
 {
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetCharacterMovement()->Deactivate();
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+	UWorld* world = GetWorld();
+	if (world)
+	{
+	ACharacter* character = UGameplayStatics::GetPlayerCharacter(world,0);
+
 
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->AddImpulse(( - hitDirection * 100000.f)+FVector::UpVector*10000.f);
+	GetMesh()->AddImpulse((character->GetActorForwardVector() * 200000.f)+FVector::UpVector*20000.f);
+	}
+
 }
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
