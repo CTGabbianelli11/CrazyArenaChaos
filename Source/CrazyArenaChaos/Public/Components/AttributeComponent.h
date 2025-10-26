@@ -29,6 +29,7 @@ private:
 
 public:
 	void RecieveDamage(float _damage);
-	float GEtHealthPercentage();
+	float GetHealthPercentage();
+	bool IsAlive();
 
 };
