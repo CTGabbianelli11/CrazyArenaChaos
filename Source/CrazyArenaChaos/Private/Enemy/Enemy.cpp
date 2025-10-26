@@ -56,9 +56,23 @@ void AEnemy::GetHit(const FVector& impactPoint)
 {
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 
-	DirectionalHitReact(impactPoint);
+
+	if (attributes && attributes->IsAlive())
+	{
+		DirectionalHitReact(impactPoint);
+	}
+	else if (attributes)
+	{
+		CharacterDied();
+	}
 }
 void AEnemy::CharacterDied()
+{
+	DropCurrency();
+
+	EnableRagdoll();
+}
+void AEnemy::DropCurrency()
 {
 	UWorld* World = GetWorld();
 	if (World && CurrencyToDrop)
@@ -72,6 +86,8 @@ void AEnemy::CharacterDied()
 }
 void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 {
+
+
 	const FVector Forward = GetActorForwardVector();
 	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
@@ -113,12 +129,13 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 
 	//GetMesh()->AddImpulseAtLocation(ToHit*100000.f,GetActorLocation(),FName("Root"));
 
-	//PlayHitReactMontage(Section);
+	PlayHitReactMontage(Section);
 
 	//NOTE: Move to health logic later
-	CharacterDied();
 
-	EnableRagdoll(ToHit);
+
+
+
 
 
 	if (GEngine)
@@ -139,7 +156,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	}
 	return DamageAmount;
 }
-void AEnemy::EnableRagdoll(FVector hitDirection)
+void AEnemy::EnableRagdoll()
 {
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
