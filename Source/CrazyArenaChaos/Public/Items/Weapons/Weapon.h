@@ -18,7 +18,7 @@ class CRAZYARENACHAOS_API AWeapon : public AItem
 public:
 	AWeapon();
 
-	void Equip(USceneComponent* InParent, FName InSocketName);
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
 
 	TArray<AActor*> ignoreActors;
 protected:
@@ -41,7 +41,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
 
-
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float damage = 20.f;
 	
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBoxComponent() const { return WeaponBoxComponent; }

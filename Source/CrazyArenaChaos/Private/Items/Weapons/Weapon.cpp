@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Interfaces/HitInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 AWeapon::AWeapon()
 {
@@ -23,8 +24,10 @@ AWeapon::AWeapon()
 
 }
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 	sphereCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -82,6 +85,13 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			HitInterface->GetHit(boxHit.ImpactPoint);
 		}
-		ignoreActors.AddUnique(boxHit.GetActor());
+
+		UGameplayStatics::ApplyDamage(
+			boxHit.GetActor(),
+			damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }

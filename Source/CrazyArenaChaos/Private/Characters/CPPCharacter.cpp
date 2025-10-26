@@ -82,7 +82,9 @@ void ACPPCharacter::Interact(const FInputActionValue& Value)
 	AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
 	if (overlappingWeapon) 
 	{
-		overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"),this,this);
+		overlappingWeapon->SetOwner(this);
+		overlappingWeapon->SetInstigator(this);
 		equippedWeapon = overlappingWeapon;
 		state = ECharacterState::ECS_EquippedOneHandedWeapon;
 	}
@@ -126,7 +128,7 @@ void ACPPCharacter::PlayAttackMontage()
 			sectionName = "Attack 1";
 			break;
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
 		AnimInstance->Montage_JumpToSection(sectionName, AttackMontage);
 	}
 }
