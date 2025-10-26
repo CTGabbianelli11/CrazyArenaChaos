@@ -24,10 +24,10 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual void GetHit(const FVector& impectPoint) override;
 	virtual void CharacterDied() override;
 	void DirectionalHitReact(const FVector& impactPoint);
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 	UFUNCTION(BlueprintCallable)
 	void EnableRagdoll(FVector hitDirection);
 	/**
