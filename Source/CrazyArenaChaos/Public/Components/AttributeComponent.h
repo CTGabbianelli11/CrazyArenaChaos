@@ -27,9 +27,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	int maxHealth =100;
 
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	int32 Currency = 0;
+
 public:
 	void RecieveDamage(float _damage);
 	float GetHealthPercentage();
 	bool IsAlive();
+
+	void AddCurrency(int32 AmountOfCurrency);
+
+	FORCEINLINE int32 GetCurrency() const { return Currency; }
 
 };
