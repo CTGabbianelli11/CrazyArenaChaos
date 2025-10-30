@@ -4,7 +4,8 @@
 #include "Items/Item.h"
 #include <CrazyArenaChaos/DebugMacros.h>
 #include "Components/SphereComponent.h"
-#include "Characters/CPPCharacter.h"
+#include "Interfaces/PickupInterface.h"
+
 
 #define THIRTY 30
 
@@ -45,9 +46,9 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 {
 	if (GEngine)
 	{
-		ACPPCharacter* character = Cast<ACPPCharacter>(OtherActor);
-		if (character)
-			character->SetOverlappingItem(this);
+		IPickupInterface* HitInterface = Cast<IPickupInterface>(OtherActor);
+		if (HitInterface)
+			HitInterface->SetOverlappingItem(this);
 	}
 }
 
@@ -55,9 +56,9 @@ void AItem::OnEndSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if (GEngine)
 	{
-		ACPPCharacter* character = Cast<ACPPCharacter>(OtherActor);
-		if (character)
-			character->SetOverlappingItem(nullptr);
+		IPickupInterface* HitInterface = Cast<IPickupInterface>(OtherActor);
+		if (HitInterface)
+			HitInterface->SetOverlappingItem(nullptr);
 	}
 }
 
