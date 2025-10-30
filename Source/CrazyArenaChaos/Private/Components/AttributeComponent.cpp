@@ -38,3 +38,8 @@ bool UAttributeComponent::IsAlive()
 	return health > 0;
 }
 
+void UAttributeComponent::AddCurrency(int32 AmountOfCurrency)
+{
+	Currency += AmountOfCurrency;
+}
+
