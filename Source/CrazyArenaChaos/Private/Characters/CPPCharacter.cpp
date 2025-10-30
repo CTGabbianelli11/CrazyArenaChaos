@@ -169,3 +169,8 @@ void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionE
 	}
 }
 
+void ACPPCharacter::SetOverlappingItem(AItem* item)
+{
+	overlappingItem = item;
+}
+

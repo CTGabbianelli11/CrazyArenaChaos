@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Characters/CharacterTypes.h"
+#include "Interfaces/PickupInterface.h"
 #include "CPPCharacter.generated.h"
 
 class UCameraComponent;
@@ -22,7 +23,7 @@ class UAnimInstance;
 
 
 UCLASS()
-class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter
+class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter,public IPickupInterface
 {
 	GENERATED_BODY()
 
@@ -33,6 +34,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+
+	virtual void SetOverlappingItem(AItem* item)override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -101,6 +104,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
 public:
-	FORCEINLINE void SetOverlappingItem(AItem* item) { overlappingItem = item; }
+
 	FORCEINLINE ECharacterState GetCharacterState() const { return state; }
+
 };
