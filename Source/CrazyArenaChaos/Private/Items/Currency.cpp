@@ -10,6 +10,7 @@ void ACurrency::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 		ACPPCharacter* character = Cast<ACPPCharacter>(OtherActor);
 		if (character)
 		{
+			character->AddCurrency(currencyValue);
 			Destroy();
 		}
 	}

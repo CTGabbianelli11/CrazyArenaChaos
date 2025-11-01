@@ -19,4 +19,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Currency Poperties")
 	int32 currencyValue;
 	
+public:
+	FORCEINLINE int32 GetCurrency() { return currencyValue; }
 };
