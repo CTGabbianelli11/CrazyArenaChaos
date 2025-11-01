@@ -19,12 +19,13 @@ class UInputAction;
 class UAttributeComponent;
 class AItem; 
 class AWeapon; 
+class ACurrency;
 class UAnimInstance;
 
 
 
 UCLASS()
-class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter,public IPickupInterface
+class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface
 {
 	GENERATED_BODY()
 
@@ -35,8 +36,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
-
-	virtual void SetOverlappingItem(AItem* item)override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -96,19 +95,20 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* overlappingItem;
-	
 
 
 
 
-/*
-*Animation Montages
-*/
+
+	/*
+	*Animation Montages
+	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
 public:
 
 	FORCEINLINE ECharacterState GetCharacterState() const { return state; }
-	void AddCurrency(int32 value);
+	virtual void SetOverlappingItem(AItem* item)override;
+	virtual void AddCurrency(ACurrency* currency)override;
 
 };

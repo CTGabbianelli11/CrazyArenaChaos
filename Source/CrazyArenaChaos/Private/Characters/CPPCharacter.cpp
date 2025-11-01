@@ -12,6 +12,7 @@
 #include "Items/Item.h"
 #include "Components/AttributeComponent.h"
 #include "Items/Weapons/Weapon.h"
+#include "Items/Currency.h"
 #include "Components/BoxComponent.h"
 
 ACPPCharacter::ACPPCharacter()
@@ -108,11 +109,6 @@ bool ACPPCharacter::CanAttack()
 		state != ECharacterState::ECS_Unequipped;
 }
 
-void ACPPCharacter::AddCurrency(int32 value)
-{
-	attributeComponent->AddCurrency(value);
-}
-
 void ACPPCharacter::PlayAttackMontage()
 {
 
@@ -180,5 +176,10 @@ void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionE
 void ACPPCharacter::SetOverlappingItem(AItem* item)
 {
 	overlappingItem = item;
+}
+
+void ACPPCharacter::AddCurrency(ACurrency* currency)
+{
+	attributeComponent->AddCurrency(currency->GetCurrency());
 }
 

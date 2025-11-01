@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Items/Currency.h"
+#include "Interfaces/PickupInterface.h"
 #include "Characters/CPPCharacter.h"
 
 
@@ -7,10 +8,10 @@ void ACurrency::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (GEngine)
 	{
-		ACPPCharacter* character = Cast<ACPPCharacter>(OtherActor);
-		if (character)
+		IPickupInterface* HitPickup = Cast<IPickupInterface>(OtherActor);
+		if (HitPickup)
 		{
-			character->AddCurrency(currencyValue);
+			HitPickup->AddCurrency(this);
 			Destroy();
 		}
 	}

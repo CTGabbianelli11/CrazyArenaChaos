@@ -7,3 +7,7 @@ void IPickupInterface::SetOverlappingItem(AItem* Item)
 {
 
 }
+void IPickupInterface::AddCurrency(ACurrency* currency)
+{
+
+}
