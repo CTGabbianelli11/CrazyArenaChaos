@@ -10,6 +10,7 @@
 //#include "GroomComponent.h"
 #include <EnhancedInputComponent.h>
 #include "Items/Item.h"
+#include "Components/AttributeComponent.h"
 #include "Items/Weapons/Weapon.h"
 #include "Components/BoxComponent.h"
 
@@ -31,6 +32,8 @@ ACPPCharacter::ACPPCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArm);
 
+
+	attributeComponent = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 	//hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
 	//hair->SetupAttachment(GetMesh());
 	//hair->AttachmentName = FString("head");
@@ -103,6 +106,11 @@ bool ACPPCharacter::CanAttack()
 {
 	return actionState == EactionState::EAS_Unoccupied &&
 		state != ECharacterState::ECS_Unequipped;
+}
+
+void ACPPCharacter::AddCurrency(int32 value)
+{
+	attributeComponent->AddCurrency(value);
 }
 
 void ACPPCharacter::PlayAttackMontage()

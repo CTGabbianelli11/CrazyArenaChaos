@@ -16,6 +16,7 @@ class UGroomComponent;
 
 class UInputMappingContext;
 class UInputAction;
+class UAttributeComponent;
 class AItem; 
 class AWeapon; 
 class UAnimInstance;
@@ -39,6 +40,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	UAttributeComponent* attributeComponent;
 
 	UPROPERTY(BlueprintReadWrite)
 	AWeapon* equippedWeapon;
@@ -106,5 +109,6 @@ private:
 public:
 
 	FORCEINLINE ECharacterState GetCharacterState() const { return state; }
+	void AddCurrency(int32 value);
 
 };
