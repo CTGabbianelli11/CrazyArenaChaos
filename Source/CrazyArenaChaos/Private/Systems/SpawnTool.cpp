@@ -107,6 +107,15 @@ bool ASpawnTool::FindValidLocation(const TArray<FVector>& Used, FVector& Out) co
 	return false;
 }
 
+int32 ASpawnTool::GetSpawnCount(const FSpawnEntry& Entry) const
+{
+	// Avoid Max < Min potential issues
+	const auto Min = FMath::Max(0, Entry.Count);
+	const auto Max = FMath::Max(Min, Entry.MaxCount);
+
+	return StreamOpt ? StreamOpt->RandRange(Min, Max) : FMath::RandRange(Min, Max);
+}
+
 void ASpawnTool::SpawnAll()
 {
 	if (Entries.Num() == 0) return;
@@ -117,7 +126,9 @@ void ASpawnTool::SpawnAll()
 	{
 		if (!E.Class) continue;
 
-		for (int32 i = 0; i < E.Count; ++i)
+		const int32 SpawnCount = GetSpawnCount(E);
+
+		for (int32 i = 0; i < SpawnCount; ++i)
 		{
 			FVector Loc;
 			if (!FindValidLocation(Used, Loc))
@@ -157,7 +168,12 @@ void ASpawnTool::PreviewSpawn()
 	// Calcola quanti oggetti totali vogliamo “simulare”
 	int32 Total = 0;
 	for (const FSpawnEntry& E : Entries)
-		if (E.Class) Total += FMath::Max(0, E.Count);
+	{
+		if (E.Class)
+		{
+			Total += GetSpawnCount(E);
+		}
+	}
 
 	TArray<FVector> Used;
 	Used.Reserve(Total);

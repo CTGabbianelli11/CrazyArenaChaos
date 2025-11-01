@@ -16,8 +16,17 @@ struct FSpawnEntry
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<AActor> Class = nullptr;
 
+	/*
+	* Miniumum spawn count. Set to a number less than MaxCount to add variance to spawning.
+	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn", meta = (ClampMin = "0"))
 	int32 Count = 1;
+
+	/*
+	* Maximimum spawn count. Set to a number greater than Count to add variance to spawning.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn", meta = (ClampMin = "0"))
+	int32 MaxCount = Count;
 };
 
 
@@ -66,6 +75,8 @@ private:
 	bool ProjectToNavMesh(FVector& InOutLocation) const;
 	bool AlignToGround(FVector& InOutLocation, FRotator& OutRot) const;
 	static bool IsFarEnough(const FVector& A, const FVector& B, float MinDist);
+
+	int32 GetSpawnCount(const FSpawnEntry& Entry) const;
 
 
 
