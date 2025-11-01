@@ -113,6 +113,11 @@ int32 ASpawnTool::GetSpawnCount(const FSpawnEntry& Entry) const
 	const auto Min = FMath::Max(0, Entry.Count);
 	const auto Max = FMath::Max(Min, Entry.MaxCount);
 
+	if (Min == Max)
+	{
+		return Min;
+	}
+
 	return StreamOpt ? StreamOpt->RandRange(Min, Max) : FMath::RandRange(Min, Max);
 }
 
