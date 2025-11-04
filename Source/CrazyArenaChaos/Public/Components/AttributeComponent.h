@@ -37,6 +37,7 @@ public:
 
 	void AddCurrency(int32 AmountOfCurrency);
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetCurrency() const { return Currency; }
 
 };
