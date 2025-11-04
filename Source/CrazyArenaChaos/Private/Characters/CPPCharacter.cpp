@@ -14,6 +14,7 @@
 #include "Items/Weapons/Weapon.h"
 #include "Items/Currency.h"
 #include "Components/BoxComponent.h"
+#include "CrazyArenaChaosGameInstance.h"
 
 ACPPCharacter::ACPPCharacter()
 {
@@ -55,6 +56,19 @@ void ACPPCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(CharacterInputMappingContext, 0);
+		}
+	}
+
+	UGameInstance* gameInstance = GetGameInstance();
+	if (gameInstance)
+	{
+
+		UCrazyArenaChaosGameInstance* CrazyArenaChaosGameInstance = Cast<UCrazyArenaChaosGameInstance>(gameInstance);
+
+		if (CrazyArenaChaosGameInstance)
+		{		
+			GEngine->AddOnScreenDebugMessage(1, 10, FColor::Blue, TEXT("found"));
+			attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
 		}
 	}
 }
