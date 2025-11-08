@@ -4,3 +4,15 @@
 #include "CrazyArenaChaosGameInstance.h"
 
 #include "Components/AttributeComponent.h"
+
+#include "Structs/PersistentDataStruct.h"
+
+void UCrazyArenaChaosGameInstance::ResetAttributes()
+{
+	playerPersistingAttributes = DefaultPlayerAttributes;
+}
+
+void UCrazyArenaChaosGameInstance::Init()
+{
+	DefaultPlayerAttributes = playerPersistingAttributes;
+}

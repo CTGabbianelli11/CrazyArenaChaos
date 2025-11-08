@@ -11,5 +11,8 @@ struct FStructPersistentData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Persistent Data")
-	float currency;
+	float currency{};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Persistent Data")
+	int32 WaveNumber{};
 };
