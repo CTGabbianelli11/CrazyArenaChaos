@@ -123,6 +123,7 @@ int32 ASpawnTool::GetSpawnCount(const FSpawnEntry& Entry) const
 
 void ASpawnTool::SpawnAll()
 {
+	//return if there is no enemy types to spawn
 	if (Entries.Num() == 0) return;
 	if (!bAllowMultipleSpawns && bHasSpawned) return;
 	TArray<FVector> Used; Used.Reserve(128);
@@ -143,7 +144,7 @@ void ASpawnTool::SpawnAll()
 			}
 
 			FRotator Rot = FRotator::ZeroRotator;
-			if (bAlignToGround) { FVector Tmp = Loc; AlignToGround(Tmp, Rot); }
+			if (!bAlignToGround) { FVector Tmp = Loc; AlignToGround(Tmp, Rot); }
 
 			FActorSpawnParameters Params;
 			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
