@@ -1,8 +1,9 @@
 #include "Systems/SpawnTool.h"
 #include "Components/SphereComponent.h"
+#include "Enemy/Enemy.h"
 #include "NavigationSystem.h"
 #include "DrawDebugHelpers.h"
-
+#include "CrazyArenaChaosGameInstance.h"
 #include "Interfaces/Spawnable.h"
 
 ASpawnTool::ASpawnTool()
@@ -159,6 +160,12 @@ void ASpawnTool::SpawnAll()
 					ISpawnable::Execute_OnSpawnedFromSpawner(NewA, this);
 				}
 				OnSpawned(NewA);
+
+				if (Cast<AEnemy>(NewA))
+				{
+					if (Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()))
+						Cast<UCrazyArenaChaosGameInstance>(GetGameInstance())->AddEnemy(Cast<AEnemy>(NewA));
+				}
 			}
 		}
 		bHasSpawned = true;
