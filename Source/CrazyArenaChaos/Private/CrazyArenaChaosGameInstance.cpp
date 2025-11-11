@@ -25,4 +25,10 @@ void UCrazyArenaChaosGameInstance::AddEnemy(AEnemy* Enemy)
 void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
 {
 	EnemiesToBeDefeated.Remove(Enemy);
+
+	if (EnemiesToBeDefeated.Num() <= 0)
+	{
+		AllEnemiesDefeated.Broadcast();
+		//GetWorld()->SpawnActor(LevelTransiti);
+	}
 }
