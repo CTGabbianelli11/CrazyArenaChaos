@@ -16,3 +16,13 @@ void UCrazyArenaChaosGameInstance::Init()
 {
 	DefaultPlayerAttributes = playerPersistingAttributes;
 }
+
+void UCrazyArenaChaosGameInstance::AddEnemy(AEnemy* Enemy)
+{
+	EnemiesToBeDefeated.Add(Enemy);
+}
+
+void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
+{
+	EnemiesToBeDefeated.Remove(Enemy);
+}

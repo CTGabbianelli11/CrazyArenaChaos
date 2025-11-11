@@ -7,6 +7,7 @@
 #include "Structs/PersistentDataStruct.h"
 #include "CrazyArenaChaosGameInstance.generated.h"
 
+class AEnemy;
 /**
  * 
  */
@@ -29,6 +30,14 @@ public:
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Player")
 	FStructPersistentData playerPersistingAttributes{};
+
+	UPROPERTY(BlueprintReadOnly, Category = "Wave Attributes")
+	TArray<AEnemy*> EnemiesToBeDefeated;
+
+	UFUNCTION(BlueprintCallable)
+	void AddEnemy(AEnemy* Enemy);
+	UFUNCTION(BlueprintCallable)
+	void RemoveEnemy(AEnemy* Enemy);
 
 private:
 	FStructPersistentData DefaultPlayerAttributes{};
