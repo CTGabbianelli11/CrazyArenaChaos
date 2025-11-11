@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Currency.h"
 #include "Animation/AnimMontage.h"
+#include "CrazyArenaChaosGameInstance.h"
 #include "Components/AttributeComponent.h"
 
 AEnemy::AEnemy()
@@ -71,6 +72,11 @@ void AEnemy::CharacterDied()
 	DropCurrency();
 
 	EnableRagdoll();
+
+	if (UCrazyArenaChaosGameInstance* instance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()))
+	{
+		instance->RemoveEnemy(this);
+	}
 }
 void AEnemy::DropCurrency()
 {
