@@ -122,8 +122,6 @@ void ACPPCharacter::EnterShoppingState()
 {
 	if (UWorld* _world = GetWorld())
 	{
-		DisableInput(UGameplayStatics::GetPlayerController(_world, 0));
-
 		FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(_world, 0)->GetActorRotation();
 		RotateTo.Yaw += 180;
 
@@ -133,6 +131,10 @@ void ACPPCharacter::EnterShoppingState()
 }
 void ACPPCharacter::EndShoppingState()
 {
+	if (UWorld* _world = GetWorld())
+	{
+		GetController()->SetControlRotation(FRotator::ZeroRotator);
+	}
 }
 bool ACPPCharacter::CanAttack()
 {
