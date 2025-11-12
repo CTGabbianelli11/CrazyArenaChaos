@@ -27,7 +27,7 @@ public:
 	TArray<AEnemy*> EnemiesToBeDefeated;
 
 	UPROPERTY(BlueprintReadWrite)
-	AActor* LevelTransitionDoor;
+	TSubclassOf<AActor> LevelTransitionDoor;
 private:
 	FStructPersistentData DefaultPlayerAttributes{};
 
@@ -53,6 +53,9 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FAllEnemiesDefeated AllEnemiesDefeated;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AllEnemiesDefeatedEvent();
 #pragma endregion
 
 
