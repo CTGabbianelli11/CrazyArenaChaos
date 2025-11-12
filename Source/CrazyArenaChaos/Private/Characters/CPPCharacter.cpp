@@ -12,6 +12,7 @@
 #include "Items/Item.h"
 #include "Components/AttributeComponent.h"
 #include "Items/Weapons/Weapon.h"
+#include "Kismet/GameplayStatics.h"
 #include "Items/Currency.h"
 #include "Components/BoxComponent.h"
 #include "CrazyArenaChaosGameInstance.h"
@@ -116,6 +117,22 @@ void ACPPCharacter::Attack(const FInputActionValue& Value)
 		actionState = EactionState::EAS_Attacking;
 	}
 
+}
+void ACPPCharacter::EnterShoppingState()
+{
+	if (UWorld* _world = GetWorld())
+	{
+		DisableInput(UGameplayStatics::GetPlayerController(_world, 0));
+
+		FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(_world, 0)->GetActorRotation();
+		RotateTo.Yaw += 180;
+
+		GetController()->SetControlRotation(RotateTo);
+	}
+
+}
+void ACPPCharacter::EndShoppingState()
+{
 }
 bool ACPPCharacter::CanAttack()
 {

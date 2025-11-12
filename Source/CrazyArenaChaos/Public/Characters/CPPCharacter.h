@@ -67,6 +67,7 @@ protected:
 	void Interact(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 
+
 	/**
 	Play montage functions
 	*/
@@ -110,5 +111,10 @@ public:
 	FORCEINLINE ECharacterState GetCharacterState() const { return state; }
 	virtual void SetOverlappingItem(AItem* item)override;
 	virtual void AddCurrency(ACurrency* currency)override;
+
+	UFUNCTION(BlueprintCallable)
+	void EnterShoppingState();
+	UFUNCTION(BlueprintCallable)
+	void EndShoppingState();
 
 };
