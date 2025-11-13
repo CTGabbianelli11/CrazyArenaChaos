@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
+	UFUNCTION(BlueprintCallable)
+	void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -83,8 +86,7 @@ protected:
 	void AttackEnd();
 	bool CanAttack();
 
-	UFUNCTION(BlueprintCallable)
-	void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
+
 
 private:
 	ECharacterState state = ECharacterState::ECS_Unequipped;
