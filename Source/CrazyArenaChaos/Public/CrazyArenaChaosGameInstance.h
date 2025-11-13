@@ -48,6 +48,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Persistent Data")
 	void ResetAttributes();
 	UFUNCTION(BlueprintCallable)
+	void SelectWeapon(UWeaponDataAsset* WeaponDataAsset);
+	UFUNCTION(BlueprintCallable)
 	void AddEnemy(AEnemy* Enemy);
 	UFUNCTION(BlueprintCallable)
 	void RemoveEnemy(AEnemy* Enemy);

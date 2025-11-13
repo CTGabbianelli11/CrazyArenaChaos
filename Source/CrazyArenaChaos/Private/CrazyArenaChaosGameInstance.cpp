@@ -4,12 +4,26 @@
 #include "CrazyArenaChaosGameInstance.h"
 
 #include "Components/AttributeComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Characters/CPPCharacter.h"
+#include "Items/Weapons/WeaponDataAsset.h"
 #include "Structs/PersistentDataStruct.h"
 
 void UCrazyArenaChaosGameInstance::ResetAttributes()
 {
 	playerPersistingAttributes = DefaultPlayerAttributes;
+}
+
+void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsset)
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (ACPPCharacter* character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(World, 0)))
+		{
+			character->EquipNewWeapon(WeaponDataAsset->WeaponToEquip);
+		}
+	}
+
 }
 
 void UCrazyArenaChaosGameInstance::Init()
