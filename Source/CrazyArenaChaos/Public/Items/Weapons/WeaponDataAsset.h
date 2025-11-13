@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "WeaponDataAsset.generated.h"
-
 /**
  * 
  */
@@ -15,6 +14,8 @@ class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	FString WeaponName="Generic Weapon";
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool HasBeenBought=false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
