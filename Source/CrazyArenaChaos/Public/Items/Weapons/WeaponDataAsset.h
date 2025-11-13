@@ -8,6 +8,7 @@
 /**
  * 
  */
+class AWeapon;
 UCLASS(Blueprintable, BlueprintType)
 class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 {
@@ -16,6 +17,8 @@ class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	FString WeaponName="Generic Weapon";
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<AWeapon> WeaponToEquip;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool HasBeenBought=false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
