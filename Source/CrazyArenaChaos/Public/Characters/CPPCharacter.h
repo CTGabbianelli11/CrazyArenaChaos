@@ -82,6 +82,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 	bool CanAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
+
 private:
 	ECharacterState state = ECharacterState::ECS_Unequipped;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))

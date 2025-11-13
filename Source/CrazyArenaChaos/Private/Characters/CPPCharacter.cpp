@@ -118,6 +118,11 @@ void ACPPCharacter::Interact(const FInputActionValue& Value)
 
 void ACPPCharacter::EquipWeapon(AWeapon* overlappingWeapon)
 {
+	if (equippedWeapon != NULL)
+	{
+		equippedWeapon->Destroy();
+	}
+
 	overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
 	overlappingWeapon->SetOwner(this);
 	overlappingWeapon->SetInstigator(this);
@@ -156,6 +161,21 @@ bool ACPPCharacter::CanAttack()
 {
 	return actionState == EactionState::EAS_Unoccupied &&
 		state != ECharacterState::ECS_Unequipped;
+}
+
+void ACPPCharacter::EquipNewWeapon(TSubclassOf<AWeapon> WeaponToEquip)
+{
+	UWorld* World = GetWorld();
+	if (WeaponToEquip && World)
+	{
+		overlappingItem = Cast<AItem>(World->SpawnActor(WeaponToEquip));
+
+		AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
+		if (overlappingWeapon)
+		{
+			EquipWeapon(overlappingWeapon);
+		}
+	}
 }
 
 void ACPPCharacter::PlayAttackMontage()
