@@ -39,6 +39,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Starting Weapon")
+	TSubclassOf<AWeapon> startingWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	UAttributeComponent* attributeComponent;
 
@@ -65,6 +69,7 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact(const FInputActionValue& Value);
+	void EquipWeapon(AWeapon* overlappingWeapon);
 	void Attack(const FInputActionValue& Value);
 
 

@@ -68,8 +68,19 @@ void ACPPCharacter::BeginPlay()
 
 		if (CrazyArenaChaosGameInstance)
 		{		
-			GEngine->AddOnScreenDebugMessage(1, 10, FColor::Blue, TEXT("found"));
 			attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
+		}
+	}
+	
+	UWorld* World = GetWorld();
+	if (startingWeapon&& World)
+	{
+		overlappingItem = Cast<AItem>(World->SpawnActor(startingWeapon));
+
+		AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
+		if (overlappingWeapon)
+		{
+			EquipWeapon(overlappingWeapon);
 		}
 	}
 }
@@ -101,12 +112,17 @@ void ACPPCharacter::Interact(const FInputActionValue& Value)
 	AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
 	if (overlappingWeapon) 
 	{
-		overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"),this,this);
-		overlappingWeapon->SetOwner(this);
-		overlappingWeapon->SetInstigator(this);
-		equippedWeapon = overlappingWeapon;
-		state = ECharacterState::ECS_EquippedOneHandedWeapon;
+		EquipWeapon(overlappingWeapon);
 	}
+}
+
+void ACPPCharacter::EquipWeapon(AWeapon* overlappingWeapon)
+{
+	overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+	overlappingWeapon->SetOwner(this);
+	overlappingWeapon->SetInstigator(this);
+	equippedWeapon = overlappingWeapon;
+	state = ECharacterState::ECS_EquippedOneHandedWeapon;
 }
 
 void ACPPCharacter::Attack(const FInputActionValue& Value)
