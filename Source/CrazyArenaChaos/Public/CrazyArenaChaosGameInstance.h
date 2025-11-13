@@ -8,6 +8,7 @@
 #include "CrazyArenaChaosGameInstance.generated.h"
 
 class AEnemy;
+class UWeaponDataAsset;
 /**
  * 
  */
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<AActor> LevelTransitionDoor;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
+	TArray<UWeaponDataAsset*> Weapons;
 private:
 	FStructPersistentData DefaultPlayerAttributes{};
 
