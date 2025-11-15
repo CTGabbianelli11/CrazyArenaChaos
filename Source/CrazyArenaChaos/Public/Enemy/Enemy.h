@@ -10,6 +10,7 @@
 
 class UAnimMontage;
 class UAttributeComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class CRAZYARENACHAOS_API AEnemy : public ACharacter,public IHitInterface,public IDeathInterface
@@ -42,11 +43,19 @@ protected:
 	virtual void BeginPlay() override;
 private:
 	/*
-*Animation Montages
-*/
+	*Animation Montages
+	*/
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* HitReactMontage;
+
+	/*
+	VFX
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = "Particle System")
+	UNiagaraSystem* HitSystem;
+
+
 
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* attributes;

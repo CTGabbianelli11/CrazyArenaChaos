@@ -12,6 +12,10 @@
 #include "Animation/AnimMontage.h"
 #include "CrazyArenaChaosGameInstance.h"
 #include "Components/AttributeComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
+
 
 AEnemy::AEnemy()
 {
@@ -56,6 +60,13 @@ void AEnemy::Tick(float DeltaTime)
 void AEnemy::GetHit(const FVector& impactPoint)
 {
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
+
+	if (HitSystem)
+	{
+		const UWorld* World = GetWorld();
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitSystem, impactPoint);
+	}
 
 
 	if (attributes && attributes->IsAlive())
@@ -112,7 +123,7 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 	{
 		Theta *= -1.f;
 	}
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 
 	FName Section("FromFront");
 	if (Theta >= -45.f && Theta < 45.f)
@@ -141,16 +152,13 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint)
 
 
 
+	//if (GEngine)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta), false);
 
-
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta), false);
-
-	}
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+	//}
+	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
+	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 }
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
