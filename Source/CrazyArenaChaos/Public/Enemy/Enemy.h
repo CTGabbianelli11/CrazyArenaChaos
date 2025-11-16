@@ -28,7 +28,7 @@ public:
 	virtual void GetHit(const FVector& impectPoint) override;
 	virtual void CharacterDied() override;
 
-	void DirectionalHitReact(const FVector& impactPoint);
+	void DirectionalHitReact(const FVector& impactPoint,const FVector impactDirection);
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 	UFUNCTION(BlueprintCallable)
 	void EnableRagdoll();

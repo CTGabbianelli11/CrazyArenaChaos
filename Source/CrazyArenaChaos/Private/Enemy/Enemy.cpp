@@ -61,17 +61,20 @@ void AEnemy::GetHit(const FVector& impactPoint)
 {
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 
+	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
+	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
+
 	if (HitSystem)
 	{
 		const UWorld* World = GetWorld();
 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitSystem, impactPoint);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitSystem, impactPoint,ToHit.Rotation());
 	}
 
 
 	if (attributes && attributes->IsAlive())
 	{
-		DirectionalHitReact(impactPoint);
+		DirectionalHitReact(impactPoint,ToHit);
 	}
 	else if (attributes)
 	{
@@ -101,24 +104,23 @@ void AEnemy::DropCurrency()
 		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
 	}
 }
-void AEnemy::DirectionalHitReact(const FVector& impactPoint)
+void AEnemy::DirectionalHitReact(const FVector& impactPoint,const FVector impactDirection)
 {
 
 
 	const FVector Forward = GetActorForwardVector();
-	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
-	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
+
 
 	//Forard * To hit = |Forward||ToHit| * cos(theta)
 	//Forward
-	const double CosTheta = FVector::DotProduct(Forward, ToHit);
+	const double CosTheta = FVector::DotProduct(Forward, impactDirection);
 	//take inverse cos (arccosin) of cos(theta) to get theta
 	double Theta = FMath::Acos(CosTheta);
 	//convert from radians to degrees
 	Theta = FMath::RadiansToDegrees(Theta);
 
 	//if cross product points down theta is negative
-	FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	FVector CrossProduct = FVector::CrossProduct(Forward, impactDirection);
 	if (CrossProduct.Z < 0)
 	{
 		Theta *= -1.f;
