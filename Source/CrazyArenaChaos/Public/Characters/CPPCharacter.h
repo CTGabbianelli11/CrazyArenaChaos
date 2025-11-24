@@ -7,6 +7,8 @@
 #include "InputAction.h"
 #include "Characters/CharacterTypes.h"
 #include "Interfaces/PickupInterface.h"
+#include "Interfaces/HitInterface.h"
+#include "Interfaces/DeathInterface.h"	
 #include "CPPCharacter.generated.h"
 
 class UCameraComponent;
@@ -25,7 +27,7 @@ class UAnimInstance;
 
 
 UCLASS()
-class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface
+class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
 {
 	GENERATED_BODY()
 
@@ -33,6 +35,9 @@ public:
 	ACPPCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void GetHit(const FVector& impectPoint) override;
+	virtual void CharacterDied() override;
 
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);

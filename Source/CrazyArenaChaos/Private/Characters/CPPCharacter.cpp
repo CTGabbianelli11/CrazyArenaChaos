@@ -157,12 +157,33 @@ void ACPPCharacter::EndShoppingState()
 		GetController()->SetControlRotation(FRotator::ZeroRotator);
 	}
 }
+
 bool ACPPCharacter::CanAttack()
 {
 	return actionState == EactionState::EAS_Unoccupied &&
 		state != ECharacterState::ECS_Unequipped;
 }
+void ACPPCharacter::GetHit(const FVector& impactPoint)
+{
+}
+void ACPPCharacter::CharacterDied()
+{
+	GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, TEXT("Dead"));
 
+	//DetachFromControllerPendingDestroy();
+
+	GetMesh()->SetAnimInstanceClass(nullptr);
+
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		ACharacter* character = UGameplayStatics::GetPlayerCharacter(world, 0);
+
+
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	}
+}
 void ACPPCharacter::EquipNewWeapon(TSubclassOf<AWeapon> WeaponToEquip)
 {
 	UWorld* World = GetWorld();

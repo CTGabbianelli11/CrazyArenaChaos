@@ -7,7 +7,7 @@
 #include "DeathInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(meta = (CannotImplementInterfaceInBlueprint))
 class UDeathInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -22,5 +22,6 @@ class CRAZYARENACHAOS_API IDeathInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void CharacterDied() = 0;
+	UFUNCTION(BlueprintCallable)
+    virtual void CharacterDied() = 0;
 };
