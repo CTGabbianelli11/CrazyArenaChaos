@@ -83,6 +83,10 @@ void AEnemy::GetHit(const FVector& impactPoint)
 }
 void AEnemy::CharacterDied()
 {
+	DetachFromControllerPendingDestroy();
+
+	GetMesh()->SetAnimInstanceClass(nullptr);
+
 	DropCurrency();
 
 	EnableRagdoll();
