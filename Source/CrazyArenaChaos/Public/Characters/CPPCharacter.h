@@ -71,6 +71,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* AttackAction;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void CharacterDiedEvent();
 	/*
 	Call backs for inputs
 	*/
@@ -122,6 +124,8 @@ private:
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HitReactMontage;
 public:
 
 	FORCEINLINE ECharacterState GetCharacterState() const { return state; }

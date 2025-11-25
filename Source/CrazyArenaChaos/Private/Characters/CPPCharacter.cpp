@@ -183,6 +183,8 @@ void ACPPCharacter::CharacterDied()
 		GetMesh()->SetSimulatePhysics(true);
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	}
+
+	CharacterDiedEvent();
 }
 void ACPPCharacter::EquipNewWeapon(TSubclassOf<AWeapon> WeaponToEquip)
 {
