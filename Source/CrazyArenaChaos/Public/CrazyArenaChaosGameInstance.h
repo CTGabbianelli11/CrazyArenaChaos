@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
 	TArray<UWeaponDataAsset*> Weapons;
+
+	UPROPERTY(BlueprintReadOnly,Category = "Level Transition Attributes")
+	TSoftObjectPtr<UWorld> ShopLevel;
 private:
 	FStructPersistentData DefaultPlayerAttributes{};
 
@@ -53,6 +56,11 @@ public:
 	void AddEnemy(AEnemy* Enemy);
 	UFUNCTION(BlueprintCallable)
 	void RemoveEnemy(AEnemy* Enemy);
+	/*
+	Handle Level transitions
+	*/
+	UFUNCTION(BlueprintCallable)
+	void LoadShop();
 #pragma endregion
 
 #pragma region Events
@@ -62,6 +70,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void AllEnemiesDefeatedEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayerDiedEvent();
 #pragma endregion
 
 

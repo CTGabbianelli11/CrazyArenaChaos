@@ -47,3 +47,11 @@ void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
 		//GetWorld()->SpawnActor(LevelTransiti);
 	}
 }
+
+void UCrazyArenaChaosGameInstance::LoadShop()
+{
+	UWorld* World = GetWorld();
+	
+	if (World)
+		UGameplayStatics::OpenLevelBySoftObjectPtr(World, ShopLevel);
+}
