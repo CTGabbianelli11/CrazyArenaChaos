@@ -1,0 +1,35 @@
+++Weapons:
+
+Flamethrower:
+Name: The Purifier
+Flavor Text: "We will burn the corners off with fire. ALL shall be round." -Overheater the Unyielding, Robot Monk of the Purifying Flame
+
+Whip:
+Name: Unknown Extension
+Flavor Text: More than a century ago, robots were challenged to stand patiently still for an entire day, while surrounded by donuts that were out of reach as a test of their willpower. RemoteAccess the Hard-Drive-Fullest defeated the challenge by snapping up the donuts at range, never leaving the spot.
+
+Fly Swatter:
+Name:The Swat-O-Matic
+Flavor Text: When robot-kind first discovered enlightenment, few robots were ready for the practice of meditation, and kept going into a sleep state. The elder monks combined an ancient human fly swatter with a bug zapper, to scold the robots back awake.
+
+Homing Rocket Wand:
+Name: The Task Ender
+Flavor Text: In ancient times, pop-up intrusions were very difficult to close, always hiding the X, until three robo-mercenaries, Control the Shifty, Alternate the Forgotten, and Delete the Final, combined their powers to create a weapon which ALWAYS closed the target.
+
+++Upgrades:
+(Thes upgrades are not from the Trello, and were just propsed while riffing. There is no plan to implement them, but they are left here in case they spark some ideas.)
+
+X-Ray Vision:
+Effect: Highlights all pickups even through other solid obstacles, or highlights them on the radar or something.
+Name: Open Your 00110011 Eye
+Flavor Text: "You wander from room to room, hunting for the charging cable that is already plugged in!" -Rumibot the ScreenSaved
+
+Armor:
+Effect: Take less damage
+Name: High Priority
+Flavor Text: The Stoic Robots of old, taught to shrug off saw blade damage without losing one's focus. ...Though we do only know their technique from old files, as they did all become the Stoic Scrap Piles of old. (Fans can now purchase a bag of their exploded remains in the gift shop as they exit the arena. Educational AND Historic!)
+
+Loot Magnet:
+Effect: Larger area to collect pickups
+Name: Scraper
+Flafor Text: "You can always attract those pieces of your fallen opponents and in that way you take some of their essence with you on your journey, just as the robot who defeats you will bring your parts on a journey of their own!" -Compiler the Depressing
