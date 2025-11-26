@@ -97,5 +97,13 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		}
 
 		ignoreActors.AddUnique(boxHit.GetActor());
+
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, boxHit.ImpactPoint, 1, 1, .1f);
+	}
+
+	else
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, MissSoundEffect, GetActorLocation(), 1, 1, .1f);
+
 	}
 }

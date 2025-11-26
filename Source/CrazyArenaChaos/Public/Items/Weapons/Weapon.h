@@ -43,6 +43,14 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float damage = 20.f;
+
+	/*
+	SFX
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = "Sound Effect")
+	USoundWave* HitSound;
+	UPROPERTY(EditDefaultsOnly, Category = "Sound Effect")
+	USoundWave* MissSoundEffect;
 	
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBoxComponent() const { return WeaponBoxComponent; }
