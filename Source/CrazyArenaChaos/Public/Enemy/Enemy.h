@@ -60,6 +60,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* attributes;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound Effects")
+	USoundWave* hitSound;
 public:	
 
 };

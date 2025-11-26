@@ -64,6 +64,11 @@ void AEnemy::GetHit(const FVector& impactPoint)
 	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
 
+	if (hitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, hitSound, GetActorLocation(),1,1,.1f);
+	}
+
 	if (HitSystem)
 	{
 		const UWorld* World = GetWorld();
