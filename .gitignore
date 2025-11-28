@@ -76,3 +76,6 @@ Config/SteamVRBindings
 Platforms/HoloLens/Config/HoloLensEngine.ini
 .vsconfig
 *.uproject
+
+# MacOS Generated System file for metadata in directories etc.
+.DS_Store
