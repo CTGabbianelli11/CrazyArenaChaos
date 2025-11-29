@@ -79,3 +79,6 @@ Platforms/HoloLens/Config/HoloLensEngine.ini
 
 # MacOS Generated System file for metadata in directories etc.
 .DS_Store
+
+# Blender backup files
+*.blend[0-9]
