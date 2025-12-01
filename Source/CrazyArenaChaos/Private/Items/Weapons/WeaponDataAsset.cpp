@@ -3,3 +3,8 @@
 
 #include "Items/Weapons/WeaponDataAsset.h"
 
+void UWeaponDataAsset::SetWeaponSelected(bool equipped)
+{
+	IsEquipped = equipped;
+	WeaponSelected.Broadcast(IsEquipped);
+}
