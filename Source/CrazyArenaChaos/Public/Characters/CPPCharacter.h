@@ -48,9 +48,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Starting Weapon")
-	TSubclassOf<AWeapon> startingWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	UAttributeComponent* attributeComponent;
 

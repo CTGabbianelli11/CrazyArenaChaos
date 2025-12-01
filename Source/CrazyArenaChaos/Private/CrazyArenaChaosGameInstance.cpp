@@ -20,7 +20,13 @@ void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsse
 	{
 		if (ACPPCharacter* character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(World, 0)))
 		{
-			character->EquipNewWeapon(WeaponDataAsset->WeaponToEquip);
+			if (CurrentWeapon)
+				CurrentWeapon->SetWeaponSelected(false);
+
+			CurrentWeapon = WeaponDataAsset;
+
+			CurrentWeapon->SetWeaponSelected(true);
+			character->EquipNewWeapon(CurrentWeapon->WeaponToEquip);
 		}
 	}
 

@@ -31,7 +31,12 @@ public:
 	TSubclassOf<AActor> LevelTransitionDoor;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
+	UWeaponDataAsset* StartingWeapon;
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
 	TArray<UWeaponDataAsset*> Weapons;
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
+	UWeaponDataAsset* CurrentWeapon;
+
 
 	UPROPERTY(BlueprintReadOnly,Category = "Level Transition Attributes")
 	TSoftObjectPtr<UWorld> ShopLevel;

@@ -69,18 +69,7 @@ void ACPPCharacter::BeginPlay()
 		if (CrazyArenaChaosGameInstance)
 		{		
 			attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
-		}
-	}
-	
-	UWorld* World = GetWorld();
-	if (startingWeapon&& World)
-	{
-		overlappingItem = Cast<AItem>(World->SpawnActor(startingWeapon));
-
-		AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
-		if (overlappingWeapon)
-		{
-			EquipWeapon(overlappingWeapon);
+			CrazyArenaChaosGameInstance->SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
 		}
 	}
 }

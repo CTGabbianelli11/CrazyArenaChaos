@@ -9,6 +9,9 @@
  * 
  */
 class AWeapon;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponSelected, bool, IsEquipped);
+
 UCLASS(Blueprintable, BlueprintType)
 class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 {
@@ -26,5 +29,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Price;
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponSelected(bool equipped);
+
+public:
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FWeaponSelected WeaponSelected;
 	
 };
