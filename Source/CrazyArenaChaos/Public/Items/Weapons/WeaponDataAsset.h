@@ -32,6 +32,8 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponSelected(bool equipped);
+	UFUNCTION(BlueprintCallable)
+	void BuyWeapon();
 
 public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
