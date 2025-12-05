@@ -11,6 +11,55 @@ void UListItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 	{
 		weaponDataAsset = Cast<UWeaponDataAsset>(ListItemObject);
 
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, weaponDataAsset->WeaponName);
+		WeaponText->SetText(FText::FromString(weaponDataAsset->WeaponName));
+
+
+
+		ItemBoughtChanged(weaponDataAsset->HasBeenBought);
+
+		ItemEquipChanged(weaponDataAsset->IsEquipped);
+
+
+		BuyButton->OnClicked.AddDynamic(this, &UListItem::TryToBuyItem);
+
 	}
+}
+
+void UListItem::TryToBuyItem()
+{
+	weaponDataAsset->BuyWeapon();
+}
+
+void UListItem::ItemBoughtChanged(bool itemBought)
+{
+	if (itemBought)
+	{
+		BuyButton->SetVisibility(ESlateVisibility::Hidden);
+		
+		EquipButton->SetVisibility(ESlateVisibility::Visible);
+
+		UpgradeButton->SetVisibility(ESlateVisibility::Visible);
+
+	}
+	else
+	{
+		BuyButton->SetVisibility(ESlateVisibility::Visible);
+
+		EquipButton->SetVisibility(ESlateVisibility::Hidden);
+
+		UpgradeButton->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UListItem::ItemEquipChanged(bool itemEquipped)
+{
+	if(itemEquipped)
+	{
+		EquipButton->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		EquipButton->SetVisibility(ESlateVisibility::Visible);
+	}
+
 }
