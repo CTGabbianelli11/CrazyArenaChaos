@@ -11,6 +11,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UNiagaraSystem;
+class UCrowdExcitementComponent;
 
 UCLASS()
 class CRAZYARENACHAOS_API AEnemy : public ACharacter,public IHitInterface,public IDeathInterface
@@ -63,6 +64,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sound Effects")
 	USoundWave* hitSound;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Crowd", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCrowdExcitementComponent> CrowdExcitementComponent{};
 public:	
 
 };

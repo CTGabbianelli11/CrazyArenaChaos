@@ -2,6 +2,8 @@
 
 
 #include "Enemy/Enemy.h"
+
+#include "Components/CrowdExcitementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "CrazyArenaChaos/DebugMacros.h"
@@ -29,6 +31,7 @@ AEnemy::AEnemy()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
+	CrowdExcitementComponent = CreateDefaultSubobject<UCrowdExcitementComponent>(TEXT("Crowd Excitement"));
 }
 
 void AEnemy::PlayHitReactMontage(const FName& sectionName)
@@ -59,6 +62,8 @@ void AEnemy::Tick(float DeltaTime)
 
 void AEnemy::GetHit(const FVector& impactPoint)
 {
+	CrowdExcitementComponent->OnHit();
+
 	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 
 	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
@@ -100,6 +105,8 @@ void AEnemy::CharacterDied()
 	{
 		instance->RemoveEnemy(this);
 	}
+
+	CrowdExcitementComponent->OnKill();
 }
 void AEnemy::DropCurrency()
 {
