@@ -50,8 +50,12 @@ void UListItem::TryToBuyItem()
 
 void UListItem::EquipItem()
 {
-	if(weaponDataAsset->HasBeenBought)
-	gameInstance->SelectWeapon(weaponDataAsset);
+	if (weaponDataAsset->HasBeenBought)
+	{
+		gameInstance->SelectWeapon(weaponDataAsset);
+		ItemEquipChanged(true);
+	}
+
 }
 
 void UListItem::ItemBoughtChanged(bool itemBought)
@@ -82,6 +86,7 @@ void UListItem::ItemEquipChanged(bool itemEquipped)
 	if(itemEquipped)
 	{
 		EquipButton->SetVisibility(ESlateVisibility::Hidden);
+		ItemEquippedEvent.Broadcast();
 	}
 	else
 	{

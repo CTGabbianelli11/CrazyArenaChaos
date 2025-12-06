@@ -13,6 +13,8 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FItemEquipped);
+
 class ACPPCharacter;
 class UCrazyArenaChaosGameInstance;
 UCLASS()
@@ -44,6 +46,9 @@ public:
 
 	void ItemEquipChanged(bool itemEquipped);
 
+public:
+	UPROPERTY(BlueprintAssignable)
+	FItemEquipped ItemEquippedEvent;
 private:
 	ACPPCharacter* character;
 	UCrazyArenaChaosGameInstance* gameInstance;
