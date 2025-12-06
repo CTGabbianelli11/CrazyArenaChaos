@@ -13,6 +13,8 @@
 /**
  * 
  */
+class ACPPCharacter;
+class UCrazyArenaChaosGameInstance;
 UCLASS()
 class CRAZYARENACHAOS_API UListItem : public UUserWidget,public IUserObjectListEntry
 {
@@ -36,7 +38,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TryToBuyItem();
 	UFUNCTION(BlueprintCallable)
+	void EquipItem();
+	UFUNCTION(BlueprintCallable)
 	void ItemBoughtChanged(bool itemBought);
 
 	void ItemEquipChanged(bool itemEquipped);
+
+private:
+	ACPPCharacter* character;
+	UCrazyArenaChaosGameInstance* gameInstance;
 };

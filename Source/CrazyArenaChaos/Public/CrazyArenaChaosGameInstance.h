@@ -80,5 +80,5 @@ public:
 #pragma endregion
 
 
-
+private:
 };

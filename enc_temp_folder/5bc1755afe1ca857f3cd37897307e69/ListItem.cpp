@@ -17,8 +17,6 @@ void UListItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 		character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0));
 	}
 
-	gameInstance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance());
-
 	if (ListItemObject&&Cast<UWeaponDataAsset>(ListItemObject))
 	{
 		weaponDataAsset = Cast<UWeaponDataAsset>(ListItemObject);

@@ -7,6 +7,8 @@
 #include "AttributeComponent.generated.h"
 
 
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CRAZYARENACHAOS_API UAttributeComponent : public UActorComponent
 {

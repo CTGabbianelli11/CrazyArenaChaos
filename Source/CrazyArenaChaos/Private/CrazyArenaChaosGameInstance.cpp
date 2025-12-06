@@ -16,7 +16,8 @@ void UCrazyArenaChaosGameInstance::ResetAttributes()
 
 void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsset)
 {
-	if (UWorld* World = GetWorld())
+	UWorld* World = GetWorld();
+	if (World)
 	{
 		if (ACPPCharacter* character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(World, 0)))
 		{
@@ -34,6 +35,11 @@ void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsse
 
 void UCrazyArenaChaosGameInstance::Init()
 {
+	if (UWorld* World = GetWorld())
+	{
+
+	}
+
 	DefaultPlayerAttributes = playerPersistingAttributes;
 }
 
