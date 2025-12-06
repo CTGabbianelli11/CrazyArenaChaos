@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Kismet/GameplayStatics.h"
+#include "Characters/CPPCharacter.h"
+#include "Components/AttributeComponent.h"
 #include "UI/ListItem.h"
 
 void UListItem::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -27,7 +29,17 @@ void UListItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 
 void UListItem::TryToBuyItem()
 {
-	weaponDataAsset->BuyWeapon();
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		ACPPCharacter* character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0));
+		if (character)
+		{
+			if (character->GetAttributes()->RemoveCurrency(weaponDataAsset->Price))
+				ItemBoughtChanged(true);
+		}
+		weaponDataAsset->BuyWeapon();
+	}
 }
 
 void UListItem::ItemBoughtChanged(bool itemBought)

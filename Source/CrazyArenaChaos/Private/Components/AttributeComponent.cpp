@@ -43,3 +43,15 @@ void UAttributeComponent::AddCurrency(int32 AmountOfCurrency)
 	Currency += AmountOfCurrency;
 }
 
+bool UAttributeComponent::RemoveCurrency(int32 AmountOfCurrency)
+{
+	if(Currency - AmountOfCurrency < 0)
+	return false;
+
+	else
+	{
+		Currency -= AmountOfCurrency;
+	}
+	return true;
+}
+

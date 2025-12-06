@@ -45,6 +45,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
 
+	UAttributeComponent* GetAttributes() { return attributeComponent; }
+
 protected:
 	virtual void BeginPlay() override;
 
