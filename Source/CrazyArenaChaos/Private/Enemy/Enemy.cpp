@@ -116,7 +116,7 @@ void AEnemy::DropCurrency()
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, GetActorLocation().ToString(), false);
 
 		FVector location = GetActorLocation();
-		location.Z += 75.f;
+		location.Z += 25.f;
 		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
 	}
 }
