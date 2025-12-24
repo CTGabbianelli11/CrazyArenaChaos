@@ -25,7 +25,6 @@ ACPPCharacter::ACPPCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	GetCharacterMovement()->bOrientRotationToMovement;
 	GetCharacterMovement()->RotationRate = FRotator(0.f,400.f,0.f);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
