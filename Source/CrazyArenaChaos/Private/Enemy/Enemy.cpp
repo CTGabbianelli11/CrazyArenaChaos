@@ -97,7 +97,7 @@ void AEnemy::CharacterDied()
 
 	GetMesh()->SetAnimInstanceClass(nullptr);
 
-	DropCurrency();
+
 
 	EnableRagdoll();
 
@@ -105,7 +105,7 @@ void AEnemy::CharacterDied()
 	{
 		instance->RemoveEnemy(this);
 	}
-
+	DropCurrency();
 	CrowdExcitementComponent->OnKill();
 }
 void AEnemy::DropCurrency()
@@ -113,8 +113,6 @@ void AEnemy::DropCurrency()
 	UWorld* World = GetWorld();
 	if (World && CurrencyToDrop)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, GetActorLocation().ToString(), false);
-
 		FVector location = GetActorLocation();
 		location.Z += 25.f;
 		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
