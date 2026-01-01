@@ -66,6 +66,8 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 	void LoadShop();
+	UFUNCTION(BlueprintCallable)
+	void RestartLevel();
 #pragma endregion
 
 #pragma region Events

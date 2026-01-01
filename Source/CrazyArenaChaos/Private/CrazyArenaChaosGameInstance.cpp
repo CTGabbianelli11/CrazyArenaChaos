@@ -67,3 +67,12 @@ void UCrazyArenaChaosGameInstance::LoadShop()
 	if (World)
 		UGameplayStatics::OpenLevelBySoftObjectPtr(World, ShopLevel);
 }
+
+void UCrazyArenaChaosGameInstance::RestartLevel()
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+		UGameplayStatics::OpenLevel(this, FName(World->GetName()), false);
+}
+
