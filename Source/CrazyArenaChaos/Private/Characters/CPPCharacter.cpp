@@ -197,7 +197,7 @@ void ACPPCharacter::PlayAttackMontage()
 	{
 		AnimInstance->Montage_Play(AttackMontage);
 
-		const int32 selection = FMath::RandRange(0, 1);
+		const int32 selection = FMath::RandRange(0, 2);
 		FName sectionName = FName();
 
 		switch (selection)
@@ -207,6 +207,9 @@ void ACPPCharacter::PlayAttackMontage()
 			break;
 		case 1:
 			sectionName = "Attack 2";
+			break;
+		case 2:
+			sectionName = "Attack 3";
 			break;
 		default:
 			sectionName = "Attack 1";

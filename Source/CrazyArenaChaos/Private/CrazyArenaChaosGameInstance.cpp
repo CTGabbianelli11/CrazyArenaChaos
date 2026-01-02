@@ -50,7 +50,12 @@ void UCrazyArenaChaosGameInstance::AddEnemy(AEnemy* Enemy)
 
 void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
 {
+	if(EnemiesToBeDefeated.Contains(Enemy))
 	EnemiesToBeDefeated.Remove(Enemy);
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Cyan, TEXT("Enemy not found in list"));
+	}
 
 	if (EnemiesToBeDefeated.Num() <= 0)
 	{
