@@ -22,7 +22,8 @@ enum EAIStates : uint8
 	GetBack,
 	Wait,
 	Look,
-	Strafe
+	Strafe,
+	Attack
 };
 
 USTRUCT(BlueprintType)
