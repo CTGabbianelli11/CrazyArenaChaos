@@ -68,7 +68,7 @@ void ACPPCharacter::BeginPlay()
 		if (CrazyArenaChaosGameInstance)
 		{		
 			attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
-			CrazyArenaChaosGameInstance->SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
+			//CrazyArenaChaosGameInstance->SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
 		}
 	}
 }
