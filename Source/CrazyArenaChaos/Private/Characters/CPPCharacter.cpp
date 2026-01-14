@@ -148,7 +148,7 @@ void ACPPCharacter::EndShoppingState()
 
 bool ACPPCharacter::CanAttack()
 {
-	return actionState == EactionState::EAS_Unoccupied &&
+	return (actionState == EactionState::EAS_Unoccupied || actionState == EactionState::EAS_Comboing)&&
 		state != ECharacterState::ECS_Unequipped;
 }
 void ACPPCharacter::GetHit(const FVector& impactPoint)
@@ -197,32 +197,35 @@ void ACPPCharacter::PlayAttackMontage()
 	{
 		AnimInstance->Montage_Play(AttackMontage);
 
-		const int32 selection = FMath::RandRange(0, 2);
-		FName sectionName = FName();
-
-		switch (selection)
-		{
-		case 0:
-			sectionName = "Attack 1";
-			break;
-		case 1:
-			sectionName = "Attack 2";
-			break;
-		case 2:
-			sectionName = "Attack 3";
-			break;
-		default:
-			sectionName = "Attack 1";
-			break;
-		}
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
-		AnimInstance->Montage_JumpToSection(sectionName, AttackMontage);
+		AnimInstance->Montage_JumpToSection(GetCurrentAttack(), AttackMontage);
 	}
 }
 
 void ACPPCharacter::AttackEnd()
 {
 	actionState = EactionState::EAS_Unoccupied;
+	attackNumber = 0;
+}
+
+void ACPPCharacter::StartInputBuffer()
+{
+	actionState = EactionState::EAS_Comboing;
+
+}
+
+void ACPPCharacter::EndBuffer()
+{
+	actionState = EactionState::EAS_Unoccupied;
+}
+
+FName ACPPCharacter::GetCurrentAttack()
+{
+	attackNumber++;
+	if(attackNumber>3)
+		attackNumber = 1;
+
+	return FName("Attack "+FString::FromInt(attackNumber));
 }
 
 

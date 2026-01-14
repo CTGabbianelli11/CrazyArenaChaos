@@ -70,6 +70,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* AttackAction;
 
+	int attackNumber = 0;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void CharacterDiedEvent();
 	/*
@@ -90,6 +92,12 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
+	UFUNCTION(BlueprintCallable)
+	void StartInputBuffer();
+	UFUNCTION(BlueprintCallable)
+	void EndBuffer();
+	UFUNCTION(BlueprintCallable)
+	FName GetCurrentAttack();
 	bool CanAttack();
 
 
