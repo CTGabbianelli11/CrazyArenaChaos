@@ -16,17 +16,55 @@ void UWeaponDataAsset::SetWeaponSelected(bool bEquipped)
     IsEquipped = bEquipped;
 
     // Broadcast selection state to any listeners (UI, gameplay systems).
-    WeaponSelected.Broadcast(IsEquipped);
+    WeaponEquipped.Broadcast(IsEquipped);
 }
+
 
 void UWeaponDataAsset::BuyWeapon()
 {
+    // Set purchase state and notify listeners (UI, inventory, analytics, etc.)
     HasBeenBought = true;
-    // Optional: hook analytics, inventory updates, etc.
+    WeaponPurchased.Broadcast(HasBeenBought);
 }
 
+
+float UWeaponDataAsset::GetCurrentDamage() const
+{
+    // Use a clamped level just in case data is out of bounds.
+    const int32 ClampedLevel = FMath::Clamp(CurrentLevel, 0, MaxLevel);
+
+    // Damage model: BaseDamage * DamagePerLevel * Level
+    return BaseDamage * DamageScaling * static_cast<float>(ClampedLevel);
+}
+
+void UWeaponDataAsset::UpgradeWeapon()
+{
+    // Increment and clamp: min 0, max MaxLevel
+    const int32 OldLevel = CurrentLevel;
+    CurrentLevel = FMath::Clamp(CurrentLevel + 1, 0, MaxLevel);
+    if (CurrentLevel != OldLevel)
+    {
+        WeaponUpgraded.Broadcast(CurrentLevel);
+    }
+
+}
+
+bool UWeaponDataAsset::CanUpgrade() const
+{
+    return CurrentLevel < MaxLevel;
+}
+
+int32 UWeaponDataAsset::GetPrice() const
+{
+    // Use a clamped level just in case data is out of bounds.
+    const int32 ClampedLevel = FMath::Clamp(CurrentLevel, 0, MaxLevel);
+
+    return Price * PriceScaling * static_cast<float>(ClampedLevel);
+}
+
+
 // =========================
-// 🔁 Clone API
+// 🔁 Clone API (existing)
 // =========================
 
 UWeaponDataAsset* UWeaponDataAsset::Clone(UObject* Outer) const
@@ -68,6 +106,10 @@ void UWeaponDataAsset::CopyFrom(const UWeaponDataAsset* Source)
     CurrentLevel = Source->CurrentLevel;
     MaxLevel = Source->MaxLevel;
 
+    BaseDamage = Source->BaseDamage;
+    DamageScaling = Source->DamageScaling;
+    PriceScaling = Source->PriceScaling;
+
     // ---------- Class / object references ----------
     WeaponToEquip = Source->WeaponToEquip;
 
@@ -75,6 +117,6 @@ void UWeaponDataAsset::CopyFrom(const UWeaponDataAsset* Source)
     Icon = Source->Icon;
 
     // NOTE:
-    // We intentionally do NOT copy multicast delegate bindings (WeaponSelected).
-    // Bind to WeaponSelected on the clone in UI/HUD or gameplay code as needed.
+    // We intentionally do NOT copy multicast delegate bindings (WeaponSelected, WeaponPurchased).
+    // Bind to these on the clone in UI/HUD or gameplay code as needed.
 }

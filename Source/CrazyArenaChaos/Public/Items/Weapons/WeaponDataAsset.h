@@ -10,49 +10,97 @@
  */
 class AWeapon;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponSelected, bool, IsEquipped);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponEquipped, bool, IsEquipped);
+/** New: purchase event */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponPurchased, bool, HasBeenBought);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponUpgraded, int32, NewLevel);
+
 
 UCLASS(Blueprintable, BlueprintType)
 class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString WeaponName = "Generic Weapon";
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AWeapon> WeaponToEquip;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HasBeenBought = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsEquipped = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Price;
-
-	// ✅ New properties for leveling
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CurrentLevel = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxLevel = 5;
-
-	/** ✅ Shop/Icon image (hard reference) */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|UI")
-	UTexture2D* Icon = nullptr;
-
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponSelected(bool equipped);
-	UFUNCTION(BlueprintCallable)
-	void BuyWeapon();
+    /** ---------- Identity / Type ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    FString WeaponName = TEXT("Generic Weapon");
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<AWeapon> WeaponToEquip;
+
+    /** ---------- Ownership / State ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|State")
+    bool HasBeenBought = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|State")
+    bool IsEquipped = false;
+
+    /** ---------- Economy ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Economy", meta = (ClampMin = "0"))
+    int32 Price = 0;
+
+    /** ---------- Leveling ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Level", meta = (ClampMin = "0"))
+    int32 CurrentLevel = 0;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Level", meta = (ClampMin = "0"))
+    int32 MaxLevel = 5;
+
+    /** ---------- Damage ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Damage", meta = (ClampMin = "0.0"))
+    float BaseDamage = 10.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Damage", meta = (ClampMin = "0.0"))
+    float DamageScaling = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Economy", meta = (ClampMin = "0.0"))
+    float PriceScaling = 1.0f;
+
+    /** ---------- UI ---------- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|UI")
+    UTexture2D* Icon = nullptr;
+
 
 public:
-	UPROPERTY(BlueprintAssignable, BlueprintCallable)
-	FWeaponSelected WeaponSelected;
 
-	/** =========================
+    /** Selection API (existing) */
+    UFUNCTION(BlueprintCallable, Category = "Weapon|State")
+    void SetWeaponSelected(bool bEquipped);
+
+    /** Purchase API (updated to broadcast) */
+    UFUNCTION(BlueprintCallable, Category = "Weapon|Shop")
+    void BuyWeapon();
+
+    /** Leveling API */
+    UFUNCTION(BlueprintCallable, Category = "Weapon|Level")
+    void UpgradeWeapon();
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon|Level")
+    bool CanUpgrade() const;
+
+    /** Damage API */
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon|Damage")
+    float GetCurrentDamage() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon|Economy")
+    int32 GetPrice() const;
+
+public:
+
+    /** Events */
+    UPROPERTY(BlueprintAssignable, Category = "Weapon|Events")
+    FWeaponEquipped WeaponEquipped;
+
+    UPROPERTY(BlueprintAssignable, Category = "Weapon|Events")
+    FWeaponPurchased WeaponPurchased;
+
+    UPROPERTY(BlueprintAssignable, Category = "Weapon|Events")
+    FWeaponUpgraded WeaponUpgraded;
+
+    /** =========================
 	 *  🔁 Clone API (additions)
 	 *  ========================= */
 
