@@ -24,6 +24,11 @@ class CRAZYARENACHAOS_API UWeaponDataAsset : public UDataAsset
 
 
 public:
+
+    // WeaponDataAsset.h (add inside public: or a section you prefer)
+    UPROPERTY(BlueprintReadWrite, Category = "Weapon|Runtime", meta = (DisplayName = "Equipped Weapon Instance"))
+    AWeapon* WeaponInstance = nullptr;
+
     /** ---------- Identity / Type ---------- */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FString WeaponName = TEXT("Generic Weapon");
@@ -58,6 +63,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Economy", meta = (ClampMin = "0.0"))
     float PriceScaling = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ClampMin = "0.0"))
+    float SizeScaleFactor = 0.0f;
 
     /** ---------- UI ---------- */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|UI")

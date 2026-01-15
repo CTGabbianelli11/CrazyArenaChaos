@@ -7,6 +7,15 @@
 #include "UObject/UObjectGlobals.h"  // NewObject
 #include "Engine/Texture2D.h"
 
+#include "Items/Weapons/WeaponDataAsset.h"
+
+// ✅ Add this to get the full AWeapon definition
+#include "Items/Weapons/Weapon.h"
+
+// ✅ Add this because you use USceneComponent*
+#include "Components/SceneComponent.h"
+
+
 // If you want logging, uncomment:
 // #include "Logging/LogMacros.h"
 // DEFINE_LOG_CATEGORY_STATIC(LogWeaponDataAsset, Log, All);
@@ -37,9 +46,10 @@ float UWeaponDataAsset::GetCurrentDamage() const
     return BaseDamage * DamageScaling * static_cast<float>(ClampedLevel);
 }
 
+
 void UWeaponDataAsset::UpgradeWeapon()
 {
-    // Increment and clamp: min 0, max MaxLevel
+    // Level up behavior (existing)
     const int32 OldLevel = CurrentLevel;
     CurrentLevel = FMath::Clamp(CurrentLevel + 1, 0, MaxLevel);
     if (CurrentLevel != OldLevel)
@@ -47,7 +57,55 @@ void UWeaponDataAsset::UpgradeWeapon()
         WeaponUpgraded.Broadcast(CurrentLevel);
     }
 
+    // --- New: Scale the equipped weapon instance, if valid ---
+    if (WeaponInstance)
+    {
+
+        UE_LOG(LogTemp, Log, TEXT("Calling UpgradeWeapon and WeaponInstance is valid"));
+        // Retrieve current uniform scale from the ScaleContainer (root).
+        // We assume uniform scale; use X as the representative value.
+        float CurrentScale = 1.0f;
+
+        if (USceneComponent* ScaleContainer = WeaponInstance->GetScaleContainer())
+        {
+            UE_LOG(LogTemp, Log, TEXT("UsingScaleContainer"));
+            const FVector RelScale = ScaleContainer->GetRelativeScale3D();
+            CurrentScale = RelScale.X; // uniform scale assumption
+        }
+        else
+        {
+            UE_LOG(LogTemp, Log, TEXT("Using Actor Fallback"));
+            // Fallback: if no ScaleContainer accessor, use Actor scale (less ideal)
+            const FVector ActorScale = WeaponInstance->GetRootComponent()
+                ? WeaponInstance->GetRootComponent()->GetRelativeScale3D()
+                : FVector(1.f);
+            CurrentScale = ActorScale.X;
+        }
+
+        // Compute the new scale per your formula:
+        // NewValue = CurrentValue + CurrentValue * SizeScaleFactor
+        //          = CurrentValue * (1 + SizeScaleFactor)
+        const float NewScale = 1.0 + (1.0f * SizeScaleFactor * CurrentLevel);
+
+        UE_LOG(LogTemp, Log, TEXT(
+            "[UpgradeWeapon] Linear Scale Calculation:\n"
+            "  CurrentLevel     = %d\n"
+            "  SizeScaleFactor  = %.4f\n"
+            "  Formula          = 1.0 * (1.0 + SizeScaleFactor * CurrentLevel)\n"
+            "  NewScale Result  = %.4f"
+        ),
+            CurrentLevel,
+            SizeScaleFactor,
+            NewScale
+        );
+
+         // Guard against negatives or zeros if desired
+        const float ClampedNewScale = FMath::Max(NewScale, 0.01f);
+
+        WeaponInstance->ScaleWeapon(ClampedNewScale);
+    }
 }
+
 
 bool UWeaponDataAsset::CanUpgrade() const
 {
@@ -109,6 +167,7 @@ void UWeaponDataAsset::CopyFrom(const UWeaponDataAsset* Source)
     BaseDamage = Source->BaseDamage;
     DamageScaling = Source->DamageScaling;
     PriceScaling = Source->PriceScaling;
+    SizeScaleFactor = Source->SizeScaleFactor;
 
     // ---------- Class / object references ----------
     WeaponToEquip = Source->WeaponToEquip;

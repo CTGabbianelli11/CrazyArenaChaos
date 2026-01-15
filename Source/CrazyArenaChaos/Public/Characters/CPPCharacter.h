@@ -1,3 +1,4 @@
+﻿
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
@@ -8,7 +9,7 @@
 #include "Characters/CharacterTypes.h"
 #include "Interfaces/PickupInterface.h"
 #include "Interfaces/HitInterface.h"
-#include "Interfaces/DeathInterface.h"	
+#include "Interfaces/DeathInterface.h"
 #include "CPPCharacter.generated.h"
 
 class UCameraComponent;
@@ -19,129 +20,133 @@ class UGroomComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAttributeComponent;
-class AItem; 
-class AWeapon; 
+class AItem;
+class AWeapon;
 class ACurrency;
 class UAnimInstance;
-
-
+class UWeaponDataAsset; // 🔗 Forward declare our data asset
 
 UCLASS()
 class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ACPPCharacter();
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    ACPPCharacter();
+    virtual void Tick(float DeltaTime) override;
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void GetHit(const FVector& impectPoint) override;
-	virtual void CharacterDied() override;
+    virtual void GetHit(const FVector& impectPoint) override;
+    virtual void CharacterDied() override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+    UFUNCTION(BlueprintCallable)
+    void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
-	UFUNCTION(BlueprintCallable)
-	void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
+    UFUNCTION(BlueprintCallable)
+    void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
 
-	UAttributeComponent* GetAttributes() { return attributeComponent; }
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+    void SetCurrentWeaponDataAsset(UWeaponDataAsset* InDataAsset); // 🔗 Assign the data asset that drives the weapon
+
+    UAttributeComponent* GetAttributes() { return attributeComponent; }
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
-	UAttributeComponent* attributeComponent;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+    UAttributeComponent* attributeComponent;
 
-	UPROPERTY(BlueprintReadWrite)
-	AWeapon* equippedWeapon;
+    UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+    AWeapon* equippedWeapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputMappingContext* CharacterInputMappingContext;
+    /** 🔗 The data asset currently driving the equipped weapon (set from UI/GameInstance/etc.) */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    UWeaponDataAsset* CurrentWeaponDataAsset = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* LookAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* InteractAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* JumpAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* AttackAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputMappingContext* CharacterInputMappingContext;
 
-	int attackNumber = 0;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* MoveAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* LookAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* InteractAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* JumpAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* AttackAction;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void CharacterDiedEvent();
-	/*
-	Call backs for inputs
-	*/
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void Interact(const FInputActionValue& Value);
-	void EquipWeapon(AWeapon* overlappingWeapon);
-	void Attack(const FInputActionValue& Value);
+    int attackNumber = 0;
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void CharacterDiedEvent();
 
-	/**
-	Play montage functions
-	*/
-	void PlayAttackMontage();
+    /*
+    Call backs for inputs
+    */
+    void Move(const FInputActionValue& Value);
+    void Look(const FInputActionValue& Value);
+    void Interact(const FInputActionValue& Value);
+    void EquipWeapon(AWeapon* overlappingWeapon);
+    void Attack(const FInputActionValue& Value);
+
+    /**
+    Play montage functions
+    */
+    void PlayAttackMontage();
+
 protected:
 
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
-	UFUNCTION(BlueprintCallable)
-	void StartInputBuffer();
-	UFUNCTION(BlueprintCallable)
-	void EndBuffer();
-	UFUNCTION(BlueprintCallable)
-	FName GetCurrentAttack();
-	bool CanAttack();
-
-
+    UFUNCTION(BlueprintCallable)
+    void AttackEnd();
+    UFUNCTION(BlueprintCallable)
+    void StartInputBuffer();
+    UFUNCTION(BlueprintCallable)
+    void EndBuffer();
+    UFUNCTION(BlueprintCallable)
+    FName GetCurrentAttack();
+    bool CanAttack();
 
 private:
-	ECharacterState state = ECharacterState::ECS_Unequipped;
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	EactionState actionState = EactionState::EAS_Unoccupied;
+    ECharacterState state = ECharacterState::ECS_Unequipped;
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComponent;
+    UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+    EactionState actionState = EactionState::EAS_Unoccupied;
 
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArm;
+    UPROPERTY(VisibleAnywhere)
+    UCameraComponent* CameraComponent;
 
-	//UPROPERTY(VisibleAnywhere, Category = Hair)
-	//UGroomComponent* hair;
+    UPROPERTY(VisibleAnywhere)
+    USpringArmComponent* SpringArm;
 
-	//UPROPERTY(VisibleAnywhere, Category = Hair)
-	//UGroomComponent* eyeBrows;
+    //UPROPERTY(VisibleAnywhere, Category = Hair)
+    //UGroomComponent* hair;
 
-	UPROPERTY(VisibleInstanceOnly)
-	AItem* overlappingItem;
+    //UPROPERTY(VisibleAnywhere, Category = Hair)
+    //UGroomComponent* eyeBrows;
 
+    UPROPERTY(VisibleInstanceOnly)
+    AItem* overlappingItem;
 
+    /*
+    * Animation Montages
+    */
+    UPROPERTY(EditDefaultsOnly, Category = "Montages")
+    UAnimMontage* AttackMontage;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Montages")
+    UAnimMontage* HitReactMontage;
 
-
-	/*
-	*Animation Montages
-	*/
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* AttackMontage;
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* HitReactMontage;
 public:
 
-	FORCEINLINE ECharacterState GetCharacterState() const { return state; }
-	virtual void SetOverlappingItem(AItem* item)override;
-	virtual void AddCurrency(ACurrency* currency)override;
+    FORCEINLINE ECharacterState GetCharacterState() const { return state; }
+    virtual void SetOverlappingItem(AItem* item) override;
+    virtual void AddCurrency(ACurrency* currency) override;
 
-	UFUNCTION(BlueprintCallable)
-	void EnterShoppingState();
-	UFUNCTION(BlueprintCallable)
-	void EndShoppingState();
+    UFUNCTION(BlueprintCallable)
+    void EnterShoppingState();
 
+    UFUNCTION(BlueprintCallable)
+    void EndShoppingState();
 };

@@ -1,5 +1,5 @@
+﻿
 // Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Characters/CPPCharacter.h"
 #include "Animation/AnimMontage.h"
@@ -16,256 +16,270 @@
 #include "Items/Currency.h"
 #include "Components/BoxComponent.h"
 #include "CrazyArenaChaosGameInstance.h"
+#include "Items/Weapons/WeaponDataAsset.h" // 🔗 For CurrentWeaponDataAsset
 
 ACPPCharacter::ACPPCharacter()
 {
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
 
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
 
-	GetCharacterMovement()->RotationRate = FRotator(0.f,400.f,0.f);
+    GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->TargetArmLength = 300.f;
+    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+    SpringArm->SetupAttachment(GetRootComponent());
+    SpringArm->TargetArmLength = 300.f;
 
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->SetupAttachment(SpringArm);
+    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    CameraComponent->SetupAttachment(SpringArm);
 
+    attributeComponent = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
+    //hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
+    //hair->SetupAttachment(GetMesh());
+    //hair->AttachmentName = FString("head");
 
-	attributeComponent = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
-	//hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
-	//hair->SetupAttachment(GetMesh());
-	//hair->AttachmentName = FString("head");
-
-	//eyeBrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eye Brows"));
-	//eyeBrows->SetupAttachment(GetMesh());
-	//eyeBrows->AttachmentName = FString("head");
-
-
+    //eyeBrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eye Brows"));
+    //eyeBrows->SetupAttachment(GetMesh());
+    //eyeBrows->AttachmentName = FString("head");
 }
 
 void ACPPCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(CharacterInputMappingContext, 0);
-		}
-	}
+    Super::BeginPlay();
 
-	UGameInstance* gameInstance = GetGameInstance();
-	if (gameInstance)
-	{
+    if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+        {
+            Subsystem->AddMappingContext(CharacterInputMappingContext, 0);
+        }
+    }
 
-		UCrazyArenaChaosGameInstance* CrazyArenaChaosGameInstance = Cast<UCrazyArenaChaosGameInstance>(gameInstance);
+    UGameInstance* gameInstance = GetGameInstance();
+    if (gameInstance)
+    {
+        UCrazyArenaChaosGameInstance* CrazyArenaChaosGameInstance = Cast<UCrazyArenaChaosGameInstance>(gameInstance);
 
-		if (CrazyArenaChaosGameInstance)
-		{		
-			attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
-			//CrazyArenaChaosGameInstance->SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
-		}
-	}
+        if (CrazyArenaChaosGameInstance)
+        {
+            attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
+            // If your GI tracks the selected weapon data asset, you could set it here:
+            // CurrentWeaponDataAsset = CrazyArenaChaosGameInstance->GetSelectedWeaponDataAsset();
+            // And optionally auto-equip a starting weapon:
+            // SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
+        }
+    }
 }
 
 void ACPPCharacter::Move(const FInputActionValue& Value)
 {
-	const FVector2D movementVector = Value.Get<FVector2D>();
+    const FVector2D movementVector = Value.Get<FVector2D>();
 
-	const FRotator controlRotation = GetControlRotation();
-	const FRotator YawRotation(0.f,controlRotation.Yaw,0.f);
+    const FRotator controlRotation = GetControlRotation();
+    const FRotator YawRotation(0.f, controlRotation.Yaw, 0.f);
 
-	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	AddMovementInput(ForwardDirection, movementVector.Y);
-	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	AddMovementInput(RightDirection, movementVector.X);
-
+    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+    AddMovementInput(ForwardDirection, movementVector.Y);
+    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+    AddMovementInput(RightDirection, movementVector.X);
 }
+
 void ACPPCharacter::Look(const FInputActionValue& Value)
 {
-
-	const FVector2D lookValue = Value.Get<FVector2D>();
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, lookValue.ToString(), false);
-	AddControllerYawInput(lookValue.X);
-	AddControllerPitchInput(-lookValue.Y);
+    const FVector2D lookValue = Value.Get<FVector2D>();
+    AddControllerYawInput(lookValue.X);
+    AddControllerPitchInput(-lookValue.Y);
 }
 
 void ACPPCharacter::Interact(const FInputActionValue& Value)
 {
-	AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
-	if (overlappingWeapon) 
-	{
-		EquipWeapon(overlappingWeapon);
-	}
+    AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
+    if (overlappingWeapon)
+    {
+        EquipWeapon(overlappingWeapon);
+    }
 }
 
 void ACPPCharacter::EquipWeapon(AWeapon* overlappingWeapon)
 {
-	if (equippedWeapon != NULL)
-	{
-		equippedWeapon->Destroy();
-	}
+    if (equippedWeapon != nullptr)
+    {
+        equippedWeapon->Destroy();
+    }
 
-	overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-	overlappingWeapon->SetOwner(this);
-	overlappingWeapon->SetInstigator(this);
-	equippedWeapon = overlappingWeapon;
-	state = ECharacterState::ECS_EquippedOneHandedWeapon;
+    // Optionally set owner/instigator first if you want logs inside Equip to see these set:
+    // overlappingWeapon->SetOwner(this);
+    // overlappingWeapon->SetInstigator(this);
+
+    overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+
+    equippedWeapon = overlappingWeapon;
+    state = ECharacterState::ECS_EquippedOneHandedWeapon;
+
+    // 🔗 Wire the live weapon instance back to the current data asset so upgrades can scale the weapon.
+    if (CurrentWeaponDataAsset)
+    {
+        CurrentWeaponDataAsset->WeaponInstance = equippedWeapon;
+        // Optional: reflect selection state for UI
+        CurrentWeaponDataAsset->SetWeaponSelected(true);
+    }
 }
 
 void ACPPCharacter::Attack(const FInputActionValue& Value)
 {
-	if (CanAttack())
-	{
-		PlayAttackMontage();
-		actionState = EactionState::EAS_Attacking;
-	}
-
+    if (CanAttack())
+    {
+        PlayAttackMontage();
+        actionState = EactionState::EAS_Attacking;
+    }
 }
+
 void ACPPCharacter::EnterShoppingState()
 {
-	if (UWorld* _world = GetWorld())
-	{
-		FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(_world, 0)->GetActorRotation();
-		RotateTo.Yaw += 180;
+    if (UWorld* _world = GetWorld())
+    {
+        FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(_world, 0)->GetActorRotation();
+        RotateTo.Yaw += 180;
 
-		GetController()->SetControlRotation(RotateTo);
-	}
-
+        GetController()->SetControlRotation(RotateTo);
+    }
 }
+
 void ACPPCharacter::EndShoppingState()
 {
-	if (UWorld* _world = GetWorld())
-	{
-		GetController()->SetControlRotation(FRotator::ZeroRotator);
-	}
+    if (UWorld* _world = GetWorld())
+    {
+        GetController()->SetControlRotation(FRotator::ZeroRotator);
+    }
 }
 
 bool ACPPCharacter::CanAttack()
 {
-	return (actionState == EactionState::EAS_Unoccupied || actionState == EactionState::EAS_Comboing)&&
-		state != ECharacterState::ECS_Unequipped;
+    return (actionState == EactionState::EAS_Unoccupied || actionState == EactionState::EAS_Comboing) &&
+        state != ECharacterState::ECS_Unequipped;
 }
+
 void ACPPCharacter::GetHit(const FVector& impactPoint)
 {
 }
+
 void ACPPCharacter::CharacterDied()
 {
-	GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, TEXT("Dead"));
+    GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, TEXT("Dead"));
 
-	//DetachFromControllerPendingDestroy();
+    //DetachFromControllerPendingDestroy();
 
-	GetMesh()->SetAnimInstanceClass(nullptr);
+    GetMesh()->SetAnimInstanceClass(nullptr);
 
-	UWorld* world = GetWorld();
-	if (world)
-	{
-		ACharacter* character = UGameplayStatics::GetPlayerCharacter(world, 0);
+    UWorld* world = GetWorld();
+    if (world)
+    {
+        ACharacter* character = UGameplayStatics::GetPlayerCharacter(world, 0);
 
+        GetMesh()->SetSimulatePhysics(true);
+        GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+    }
 
-		GetMesh()->SetSimulatePhysics(true);
-		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	}
-
-	CharacterDiedEvent();
+    CharacterDiedEvent();
 }
+
 void ACPPCharacter::EquipNewWeapon(TSubclassOf<AWeapon> WeaponToEquip)
 {
-	UWorld* World = GetWorld();
-	if (WeaponToEquip && World)
-	{
-		overlappingItem = Cast<AItem>(World->SpawnActor(WeaponToEquip));
+    UWorld* World = GetWorld();
+    if (WeaponToEquip && World)
+    {
+        overlappingItem = Cast<AItem>(World->SpawnActor(WeaponToEquip));
 
-		AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
-		if (overlappingWeapon)
-		{
-			EquipWeapon(overlappingWeapon);
-		}
-	}
+        AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
+        if (overlappingWeapon)
+        {
+            EquipWeapon(overlappingWeapon);
+        }
+    }
 }
 
 void ACPPCharacter::PlayAttackMontage()
 {
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && AttackMontage)
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
-		AnimInstance->Montage_JumpToSection(GetCurrentAttack(), AttackMontage);
-	}
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && AttackMontage)
+    {
+        AnimInstance->Montage_Play(AttackMontage);
+        AnimInstance->Montage_JumpToSection(GetCurrentAttack(), AttackMontage);
+    }
 }
 
 void ACPPCharacter::AttackEnd()
 {
-	actionState = EactionState::EAS_Unoccupied;
-	attackNumber = 0;
+    actionState = EactionState::EAS_Unoccupied;
+    attackNumber = 0;
 }
 
 void ACPPCharacter::StartInputBuffer()
 {
-	actionState = EactionState::EAS_Comboing;
-
+    actionState = EactionState::EAS_Comboing;
 }
 
 void ACPPCharacter::EndBuffer()
 {
-	actionState = EactionState::EAS_Unoccupied;
+    actionState = EactionState::EAS_Unoccupied;
 }
 
 FName ACPPCharacter::GetCurrentAttack()
 {
-	attackNumber++;
-	if(attackNumber>3)
-		attackNumber = 1;
+    attackNumber++;
+    if (attackNumber > 3)
+        attackNumber = 1;
 
-	return FName("Attack "+FString::FromInt(attackNumber));
+    return FName("Attack " + FString::FromInt(attackNumber));
 }
-
-
 
 void ACPPCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+    Super::Tick(DeltaTime);
 }
 
 void ACPPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Jump);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Interact);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Attack);
-	}
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Move);
+        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Look);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Jump);
+        EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Interact);
+        EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Attack);
+    }
 }
 
 void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
 {
-	if (equippedWeapon && equippedWeapon->GetWeaponBoxComponent())
-	{
-		equippedWeapon->GetWeaponBoxComponent()->SetCollisionEnabled(CollisionEnabled);
-		equippedWeapon->ignoreActors.Empty();
-	}
+    if (equippedWeapon && equippedWeapon->GetWeaponBoxComponent())
+    {
+        equippedWeapon->GetWeaponBoxComponent()->SetCollisionEnabled(CollisionEnabled);
+        equippedWeapon->ignoreActors.Empty();
+    }
 }
 
 void ACPPCharacter::SetOverlappingItem(AItem* item)
 {
-	overlappingItem = item;
+    overlappingItem = item;
 }
 
 void ACPPCharacter::AddCurrency(ACurrency* currency)
 {
-	attributeComponent->AddCurrency(currency->GetCurrency());
+    attributeComponent->AddCurrency(currency->GetCurrency());
 }
 
+void ACPPCharacter::SetCurrentWeaponDataAsset(UWeaponDataAsset* InDataAsset)
+{
+    CurrentWeaponDataAsset = InDataAsset;
+
+    // If we already have an equipped weapon, immediately wire it so future upgrades affect it.
+    if (CurrentWeaponDataAsset && equippedWeapon)
+    {
+        CurrentWeaponDataAsset->WeaponInstance = equippedWeapon;
+    }
+}

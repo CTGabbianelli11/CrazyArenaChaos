@@ -27,6 +27,7 @@ void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsse
 			CurrentWeapon = WeaponDataAsset;
 
 			CurrentWeapon->SetWeaponSelected(true);
+			character->SetCurrentWeaponDataAsset(CurrentWeapon);
 			character->EquipNewWeapon(CurrentWeapon->WeaponToEquip);
 		}
 	}
