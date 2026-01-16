@@ -60,7 +60,7 @@ bool ASpawnTool::GetRandomLocation(FVector& Out) const
 
 bool ASpawnTool::ProjectToNavMesh(FVector& InOut) const
 {
-	if (!bUseNavmesh) return true;
+	
 	if (const UNavigationSystemV1* Nav = UNavigationSystemV1::GetCurrent(GetWorld()))
 	{
 		FNavLocation OutLoc;
@@ -76,13 +76,15 @@ bool ASpawnTool::AlignToGround(FVector& InOut, FRotator& OutRot) const
 {
 	if (!bAlignToGround) { OutRot = FRotator::ZeroRotator; return true; }
 
-	FVector Start = InOut + FVector(0, 0, GroundTraceHeight);
+	FVector Start = InOut + FVector(0, 0, GroundTraceHeight * 6.f);
 	FVector End = InOut - FVector(0, 0, GroundTraceHeight * 2.f);
 	FHitResult Hit;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(SpawnTrace), false, this);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_WorldStatic, Params))
 	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.f);
+		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 50.f, 12, FColor::Green, false, 10.f);
 		InOut = Hit.ImpactPoint; OutRot = Hit.ImpactNormal.Rotation(); return true;
 	}
 	return false;
@@ -93,6 +95,10 @@ bool ASpawnTool::FindValidLocation(const TArray<FVector>& Used, FVector& Out) co
 	for (int32 Try = 0; Try < MaxTriesPerActor; ++Try)
 	{
 		FVector P; GetRandomLocation(P);
+		
+		FRotator Dummy;
+		if (!AlignToGround(P, Dummy)) continue;
+		
 		if (!ProjectToNavMesh(P)) continue;
 
 		bool bOk = true;
@@ -100,8 +106,7 @@ bool ASpawnTool::FindValidLocation(const TArray<FVector>& Used, FVector& Out) co
 			if (!IsFarEnough(P, U, MinDistance)) { bOk = false; break; }
 		if (!bOk) continue;
 
-		FRotator Dummy;
-		if (!AlignToGround(P, Dummy)) continue;
+		
 
 		Out = P; return true;
 	}
@@ -178,7 +183,7 @@ void ASpawnTool::PreviewSpawn()
 	// Genera gli stessi punti che useresti per lo spawn vero
 	PreviewPoints.Reset();
 
-	// Calcola quanti oggetti totali vogliamo “simulare”
+	// Calcola quanti oggetti totali vogliamo ï¿½simulareï¿½
 	int32 Total = 0;
 	for (const FSpawnEntry& E : Entries)
 	{

@@ -49,9 +49,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn") bool bAlignToGround = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn", meta = (ClampMin = "0.0")) float GroundTraceHeight = 500.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn") int32 Seed = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn") bool bUseNavmesh = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn", meta = (ClampMin = "0.0")) bool bAllowMultipleSpawns = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn") TArray<FSpawnEntry> Entries;
 
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
