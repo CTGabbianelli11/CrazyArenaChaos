@@ -1,22 +1,22 @@
 ﻿
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CPPCharacter.cpp
 #include "Characters/CPPCharacter.h"
 #include "Animation/AnimMontage.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-//#include "GroomComponent.h"
 #include <EnhancedInputComponent.h>
 #include "Items/Item.h"
 #include "Components/AttributeComponent.h"
 #include "Items/Weapons/Weapon.h"
-#include "Kismet/GameplayStatics.h"
 #include "Items/Currency.h"
 #include "Components/BoxComponent.h"
 #include "CrazyArenaChaosGameInstance.h"
-#include "Items/Weapons/WeaponDataAsset.h" // 🔗 For CurrentWeaponDataAsset
+#include "Kismet/GameplayStatics.h"
+
+// Included only for the BP helper that spawns from Data Asset
+#include "Items/Weapons/WeaponDataAsset.h"
 
 ACPPCharacter::ACPPCharacter()
 {
@@ -36,13 +36,6 @@ ACPPCharacter::ACPPCharacter()
     CameraComponent->SetupAttachment(SpringArm);
 
     attributeComponent = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
-    //hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
-    //hair->SetupAttachment(GetMesh());
-    //hair->AttachmentName = FString("head");
-
-    //eyeBrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eye Brows"));
-    //eyeBrows->SetupAttachment(GetMesh());
-    //eyeBrows->AttachmentName = FString("head");
 }
 
 void ACPPCharacter::BeginPlay()
@@ -51,24 +44,19 @@ void ACPPCharacter::BeginPlay()
 
     if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
     {
-        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+            ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
         {
             Subsystem->AddMappingContext(CharacterInputMappingContext, 0);
         }
     }
 
-    UGameInstance* gameInstance = GetGameInstance();
-    if (gameInstance)
+    // Load persisted currency
+    if (UGameInstance* GI = GetGameInstance())
     {
-        UCrazyArenaChaosGameInstance* CrazyArenaChaosGameInstance = Cast<UCrazyArenaChaosGameInstance>(gameInstance);
-
-        if (CrazyArenaChaosGameInstance)
+        if (UCrazyArenaChaosGameInstance* CAC_GI = Cast<UCrazyArenaChaosGameInstance>(GI))
         {
-            attributeComponent->AddCurrency(CrazyArenaChaosGameInstance->playerPersistingAttributes.currency);
-            // If your GI tracks the selected weapon data asset, you could set it here:
-            // CurrentWeaponDataAsset = CrazyArenaChaosGameInstance->GetSelectedWeaponDataAsset();
-            // And optionally auto-equip a starting weapon:
-            // SelectWeapon(CrazyArenaChaosGameInstance->StartingWeapon);
+            attributeComponent->AddCurrency(CAC_GI->playerPersistingAttributes.currency);
         }
     }
 }
@@ -76,12 +64,12 @@ void ACPPCharacter::BeginPlay()
 void ACPPCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D movementVector = Value.Get<FVector2D>();
-
     const FRotator controlRotation = GetControlRotation();
     const FRotator YawRotation(0.f, controlRotation.Yaw, 0.f);
 
     const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
     AddMovementInput(ForwardDirection, movementVector.Y);
+
     const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
     AddMovementInput(RightDirection, movementVector.X);
 }
@@ -93,41 +81,64 @@ void ACPPCharacter::Look(const FInputActionValue& Value)
     AddControllerPitchInput(-lookValue.Y);
 }
 
-void ACPPCharacter::Interact(const FInputActionValue& Value)
+void ACPPCharacter::Interact(const FInputActionValue& /*Value*/)
 {
-    AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
-    if (overlappingWeapon)
+    // Equip overlapping world weapon instance (e.g., dropped item that is already an AWeapon)
+    if (AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem))
     {
-        EquipWeapon(overlappingWeapon);
+        EquipExistingWeapon(overlappingWeapon);
     }
 }
 
 void ACPPCharacter::EquipWeapon(AWeapon* overlappingWeapon)
 {
+    if (!overlappingWeapon) return;
+
+    // Remove previously equipped weapon
     if (equippedWeapon != nullptr)
     {
-        equippedWeapon->Destroy();
+        // Hide it safely if you don’t render inventory in-world
+        equippedWeapon->Unequip(/*bReturnToInventory=*/false);
+        //equippedWeapon->Destroy();
     }
 
-    // Optionally set owner/instigator first if you want logs inside Equip to see these set:
-    // overlappingWeapon->SetOwner(this);
-    // overlappingWeapon->SetInstigator(this);
-
+    // Attach; AWeapon::Equip will re-apply runtime scale AFTER attachment (fixes scale mismatch)
     overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-
     equippedWeapon = overlappingWeapon;
     state = ECharacterState::ECS_EquippedOneHandedWeapon;
 
-    // 🔗 Wire the live weapon instance back to the current data asset so upgrades can scale the weapon.
-    if (CurrentWeaponDataAsset)
-    {
-        CurrentWeaponDataAsset->WeaponInstance = equippedWeapon;
-        // Optional: reflect selection state for UI
-        CurrentWeaponDataAsset->SetWeaponSelected(true);
-    }
+    // Mark as equipped (fires weapon-side event); do NOT re-initialize here
+    equippedWeapon->SetEquipped(true);
 }
 
-void ACPPCharacter::Attack(const FInputActionValue& Value)
+void ACPPCharacter::EquipExistingWeapon(AWeapon* WeaponInstance)
+{
+    EquipWeapon(WeaponInstance);
+}
+
+AWeapon* ACPPCharacter::BP_SpawnWeaponFromDataAsset(UWeaponDataAsset* Config, bool bEquipNow)
+{
+    if (!Config || !Config->WeaponToEquip) return nullptr;
+
+    UWorld* World = GetWorld();
+    if (!World) return nullptr;
+
+    // Spawn runtime weapon from the class indicated in the Data Asset
+    AWeapon* NewWeapon = World->SpawnActor<AWeapon>(Config->WeaponToEquip);
+    if (!NewWeapon) return nullptr;
+
+    // One-time, immutable -> runtime copy
+    NewWeapon->InitializeFromDataAsset(Config);
+
+    if (bEquipNow)
+    {
+        EquipExistingWeapon(NewWeapon);
+    }
+
+    return NewWeapon;
+}
+
+void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
 {
     if (CanAttack())
     {
@@ -138,18 +149,17 @@ void ACPPCharacter::Attack(const FInputActionValue& Value)
 
 void ACPPCharacter::EnterShoppingState()
 {
-    if (UWorld* _world = GetWorld())
+    if (UWorld* World = GetWorld())
     {
-        FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(_world, 0)->GetActorRotation();
+        FRotator RotateTo = UGameplayStatics::GetPlayerCharacter(World, 0)->GetActorRotation();
         RotateTo.Yaw += 180;
-
         GetController()->SetControlRotation(RotateTo);
     }
 }
 
 void ACPPCharacter::EndShoppingState()
 {
-    if (UWorld* _world = GetWorld())
+    if (UWorld* World = GetWorld())
     {
         GetController()->SetControlRotation(FRotator::ZeroRotator);
     }
@@ -161,23 +171,19 @@ bool ACPPCharacter::CanAttack()
         state != ECharacterState::ECS_Unequipped;
 }
 
-void ACPPCharacter::GetHit(const FVector& impactPoint)
+void ACPPCharacter::GetHit(const FVector& /*impactPoint*/)
 {
+    // Intentionally left blank
 }
 
 void ACPPCharacter::CharacterDied()
 {
     GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, TEXT("Dead"));
-
-    //DetachFromControllerPendingDestroy();
-
     GetMesh()->SetAnimInstanceClass(nullptr);
 
-    UWorld* world = GetWorld();
-    if (world)
+    if (UWorld* World = GetWorld())
     {
-        ACharacter* character = UGameplayStatics::GetPlayerCharacter(world, 0);
-
+        ACharacter* character = UGameplayStatics::GetPlayerCharacter(this, 0);
         GetMesh()->SetSimulatePhysics(true);
         GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
     }
@@ -185,28 +191,15 @@ void ACPPCharacter::CharacterDied()
     CharacterDiedEvent();
 }
 
-void ACPPCharacter::EquipNewWeapon(TSubclassOf<AWeapon> WeaponToEquip)
-{
-    UWorld* World = GetWorld();
-    if (WeaponToEquip && World)
-    {
-        overlappingItem = Cast<AItem>(World->SpawnActor(WeaponToEquip));
-
-        AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem);
-        if (overlappingWeapon)
-        {
-            EquipWeapon(overlappingWeapon);
-        }
-    }
-}
-
 void ACPPCharacter::PlayAttackMontage()
 {
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && AttackMontage)
+    if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
     {
-        AnimInstance->Montage_Play(AttackMontage);
-        AnimInstance->Montage_JumpToSection(GetCurrentAttack(), AttackMontage);
+        if (AttackMontage)
+        {
+            AnimInstance->Montage_Play(AttackMontage);
+            AnimInstance->Montage_JumpToSection(GetCurrentAttack(), AttackMontage);
+        }
     }
 }
 
@@ -229,9 +222,7 @@ void ACPPCharacter::EndBuffer()
 FName ACPPCharacter::GetCurrentAttack()
 {
     attackNumber++;
-    if (attackNumber > 3)
-        attackNumber = 1;
-
+    if (attackNumber > 3) attackNumber = 1;
     return FName("Attack " + FString::FromInt(attackNumber));
 }
 
@@ -270,16 +261,8 @@ void ACPPCharacter::SetOverlappingItem(AItem* item)
 
 void ACPPCharacter::AddCurrency(ACurrency* currency)
 {
-    attributeComponent->AddCurrency(currency->GetCurrency());
-}
-
-void ACPPCharacter::SetCurrentWeaponDataAsset(UWeaponDataAsset* InDataAsset)
-{
-    CurrentWeaponDataAsset = InDataAsset;
-
-    // If we already have an equipped weapon, immediately wire it so future upgrades affect it.
-    if (CurrentWeaponDataAsset && equippedWeapon)
+    if (attributeComponent && currency)
     {
-        CurrentWeaponDataAsset->WeaponInstance = equippedWeapon;
+        attributeComponent->AddCurrency(currency->GetCurrency());
     }
 }

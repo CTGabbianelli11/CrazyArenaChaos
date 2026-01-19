@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+// CrazyArenaChaosGameInstance.h
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,79 +8,84 @@
 #include "CrazyArenaChaosGameInstance.generated.h"
 
 class AEnemy;
-class UWeaponDataAsset;
-/**
- * 
- */
+
+/** Broadcast when all enemies in the wave are defeated */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAllEnemiesDefeated);
 
 UCLASS()
 class CRAZYARENACHAOS_API UCrazyArenaChaosGameInstance : public UGameInstance
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-#pragma region Variables
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "Player")
-	FStructPersistentData playerPersistingAttributes{};
+    // -------------------- Persisted Player State --------------------
+    UPROPERTY(BlueprintReadWrite, Category = "Player")
+    FStructPersistentData playerPersistingAttributes{};
 
-	UPROPERTY(BlueprintReadOnly, Category = "Wave Attributes")
-	TArray<AEnemy*> EnemiesToBeDefeated;
+    // -------------------- Wave Tracking --------------------
+    UPROPERTY(BlueprintReadOnly, Category = "Wave Attributes")
+    TArray<AEnemy*> EnemiesToBeDefeated;
 
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<AActor> LevelTransitionDoor;
+    // -------------------- Level Transition --------------------
+    UPROPERTY(BlueprintReadWrite)
+    TSubclassOf<AActor> LevelTransitionDoor;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
-	UWeaponDataAsset* StartingWeapon;
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
-	TArray<UWeaponDataAsset*> Weapons;
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Attributes")
-	UWeaponDataAsset* CurrentWeapon;
+    UPROPERTY(BlueprintReadOnly, Category = "Level Transition Attributes")
+    TSoftObjectPtr<UWorld> ShopLevel;
 
+    // -------------------- Shop Reference --------------------
+    /**
+     * Weak reference to the existing BP_Shop actor.
+     * Register it from BP_Shop (e.g., in BeginPlay) by calling RegisterShopActor(self).
+     */
+    UPROPERTY(BlueprintReadOnly, Category = "Shop")
+    TWeakObjectPtr<UActorComponent> ShopActor;
 
-	UPROPERTY(BlueprintReadOnly,Category = "Level Transition Attributes")
-	TSoftObjectPtr<UWorld> ShopLevel;
+public:
+    // -------------------- Lifecycle --------------------
+    virtual void Init() override;
+
+    // -------------------- Persistent Data Utilities --------------------
+    /** Resets the persistent data to initial values. */
+    UFUNCTION(BlueprintCallable, Category = "Persistent Data")
+    void ResetAttributes();
+
+    // -------------------- Shop Registration & Access --------------------
+    /** Called by BP_Shop at runtime to register itself with the GameInstance. */
+    UFUNCTION(BlueprintCallable, Category = "Shop")
+    void RegisterShopActor(UActorComponent* InShop);
+
+    /** Clears the registered Shop actor reference (optional helper). */
+    UFUNCTION(BlueprintCallable, Category = "Shop")
+    void UnregisterShopActor();
+
+    /** Returns the registered Shop actor (BP_Shop) if available, else nullptr. */
+    UFUNCTION(BlueprintPure, Category = "Shop")
+    UActorComponent* GetShopActor() const { return ShopActor.Get(); }
+
+    /** Returns true if a Shop actor is currently registered. */
+    UFUNCTION(BlueprintPure, Category = "Shop")
+    bool HasShop() const { return ShopActor.IsValid(); }
+
+    // -------------------- Wave Management --------------------
+    UFUNCTION(BlueprintCallable) void AddEnemy(AEnemy* Enemy);
+    UFUNCTION(BlueprintCallable) void RemoveEnemy(AEnemy* Enemy);
+
+    // -------------------- Level Transitions --------------------
+    UFUNCTION(BlueprintCallable) void LoadShop();
+    UFUNCTION(BlueprintCallable) void RestartLevel();
+
+public:
+    // -------------------- Events --------------------
+    UPROPERTY(BlueprintAssignable)
+    FAllEnemiesDefeated AllEnemiesDefeated;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void AllEnemiesDefeatedEvent();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void PlayerDiedEvent();
+
 private:
-	FStructPersistentData DefaultPlayerAttributes{};
-
-
-#pragma endregion
-
-#pragma region Functions
-public:
-	virtual void Init() override;
-	/**
-* Resets the persistent data to initial values.
-* Possibly could be used from main menu when a new game is started, assuming currency is not persisted across sessions.
-*/
-	UFUNCTION(BlueprintCallable, Category = "Persistent Data")
-	void ResetAttributes();
-	UFUNCTION(BlueprintCallable)
-	void SelectWeapon(UWeaponDataAsset* WeaponDataAsset);
-	UFUNCTION(BlueprintCallable)
-	void AddEnemy(AEnemy* Enemy);
-	UFUNCTION(BlueprintCallable)
-	void RemoveEnemy(AEnemy* Enemy);
-	/*
-	Handle Level transitions
-	*/
-	UFUNCTION(BlueprintCallable)
-	void LoadShop();
-	UFUNCTION(BlueprintCallable)
-	void RestartLevel();
-#pragma endregion
-
-#pragma region Events
-public:
-	UPROPERTY(BlueprintAssignable)
-	FAllEnemiesDefeated AllEnemiesDefeated;
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void AllEnemiesDefeatedEvent();
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayerDiedEvent();
-#pragma endregion
-
-
-private:
+    FStructPersistentData DefaultPlayerAttributes{};
 };

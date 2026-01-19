@@ -1,6 +1,5 @@
 ﻿
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CPPCharacter.h
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,9 +13,6 @@
 
 class UCameraComponent;
 class USpringArmComponent;
-
-class UGroomComponent;
-
 class UInputMappingContext;
 class UInputAction;
 class UAttributeComponent;
@@ -24,7 +20,7 @@ class AItem;
 class AWeapon;
 class ACurrency;
 class UAnimInstance;
-class UWeaponDataAsset; // 🔗 Forward declare our data asset
+class UWeaponDataAsset; // Forward declare for BP helper only
 
 UCLASS()
 class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
@@ -33,20 +29,29 @@ class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInter
 
 public:
     ACPPCharacter();
+
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    // Interfaces
     virtual void GetHit(const FVector& impectPoint) override;
     virtual void CharacterDied() override;
 
+    /** Collision gate for the weapon box during attack montage notifies */
     UFUNCTION(BlueprintCallable)
     void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
-    UFUNCTION(BlueprintCallable)
-    void EquipNewWeapon(TSubclassOf<AWeapon> weaponToEquip);
-
+    /** Shop-authoritative path: equip an already-spawned weapon instance */
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-    void SetCurrentWeaponDataAsset(UWeaponDataAsset* InDataAsset); // 🔗 Assign the data asset that drives the weapon
+    void EquipExistingWeapon(AWeapon* WeaponInstance);
+
+    /**
+     * Blueprint helper for Shop UI/logic:
+     * Spawns a weapon from a Data Asset, initializes from config once, and optionally equips it.
+     * This exists purely to provide a valid World context for Blueprint-only shops.
+     */
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+    AWeapon* BP_SpawnWeaponFromDataAsset(UWeaponDataAsset* Config, bool bEquipNow);
 
     UAttributeComponent* GetAttributes() { return attributeComponent; }
 
@@ -56,24 +61,26 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
     UAttributeComponent* attributeComponent;
 
+    /** Currently equipped, live weapon instance */
     UPROPERTY(BlueprintReadWrite, Category = "Weapon")
     AWeapon* equippedWeapon;
 
-    /** 🔗 The data asset currently driving the equipped weapon (set from UI/GameInstance/etc.) */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-    UWeaponDataAsset* CurrentWeaponDataAsset = nullptr;
-
+    // Input
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputMappingContext* CharacterInputMappingContext;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* MoveAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* LookAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* InteractAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* JumpAction;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* AttackAction;
 
@@ -82,30 +89,24 @@ protected:
     UFUNCTION(BlueprintImplementableEvent)
     void CharacterDiedEvent();
 
-    /*
-    Call backs for inputs
-    */
+    // Input callbacks
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void Interact(const FInputActionValue& Value);
+
+    /** Attach weapon instance without re-initialization (used by interact/store-provided instance). */
     void EquipWeapon(AWeapon* overlappingWeapon);
+
     void Attack(const FInputActionValue& Value);
 
-    /**
-    Play montage functions
-    */
+    // Play montage functions
     void PlayAttackMontage();
 
 protected:
-
-    UFUNCTION(BlueprintCallable)
-    void AttackEnd();
-    UFUNCTION(BlueprintCallable)
-    void StartInputBuffer();
-    UFUNCTION(BlueprintCallable)
-    void EndBuffer();
-    UFUNCTION(BlueprintCallable)
-    FName GetCurrentAttack();
+    UFUNCTION(BlueprintCallable) void AttackEnd();
+    UFUNCTION(BlueprintCallable) void StartInputBuffer();
+    UFUNCTION(BlueprintCallable) void EndBuffer();
+    UFUNCTION(BlueprintCallable) FName GetCurrentAttack();
     bool CanAttack();
 
 private:
@@ -114,39 +115,20 @@ private:
     UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
     EactionState actionState = EactionState::EAS_Unoccupied;
 
-    UPROPERTY(VisibleAnywhere)
-    UCameraComponent* CameraComponent;
+    UPROPERTY(VisibleAnywhere) UCameraComponent* CameraComponent;
+    UPROPERTY(VisibleAnywhere) USpringArmComponent* SpringArm;
 
-    UPROPERTY(VisibleAnywhere)
-    USpringArmComponent* SpringArm;
+    UPROPERTY(VisibleInstanceOnly) AItem* overlappingItem;
 
-    //UPROPERTY(VisibleAnywhere, Category = Hair)
-    //UGroomComponent* hair;
-
-    //UPROPERTY(VisibleAnywhere, Category = Hair)
-    //UGroomComponent* eyeBrows;
-
-    UPROPERTY(VisibleInstanceOnly)
-    AItem* overlappingItem;
-
-    /*
-    * Animation Montages
-    */
-    UPROPERTY(EditDefaultsOnly, Category = "Montages")
-    UAnimMontage* AttackMontage;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Montages")
-    UAnimMontage* HitReactMontage;
+    // Animation Montages
+    UPROPERTY(EditDefaultsOnly, Category = "Montages") UAnimMontage* AttackMontage;
+    UPROPERTY(EditDefaultsOnly, Category = "Montages") UAnimMontage* HitReactMontage;
 
 public:
-
     FORCEINLINE ECharacterState GetCharacterState() const { return state; }
     virtual void SetOverlappingItem(AItem* item) override;
     virtual void AddCurrency(ACurrency* currency) override;
 
-    UFUNCTION(BlueprintCallable)
-    void EnterShoppingState();
-
-    UFUNCTION(BlueprintCallable)
-    void EndShoppingState();
+    UFUNCTION(BlueprintCallable) void EnterShoppingState();
+    UFUNCTION(BlueprintCallable) void EndShoppingState();
 };

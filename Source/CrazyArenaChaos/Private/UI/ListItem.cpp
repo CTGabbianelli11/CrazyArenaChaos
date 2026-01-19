@@ -1,96 +1,108 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
+// ListItem.cpp
 #include "UI/ListItem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Characters/CPPCharacter.h"
 #include "Components/AttributeComponent.h"
 #include "CrazyArenaChaosGameInstance.h"
-
-
+#include "Items/Weapons/Weapon.h" // for getters like GetIcon/GetPrice
 
 void UListItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
-	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+    IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
 
-	UWorld* world = GetWorld();
-	if (world)
-	{
-		character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(world, 0));
-	}
+    UWorld* World = GetWorld();
+    if (World)
+    {
+        character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(World, 0));
+    }
+    gameInstance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance());
 
-	gameInstance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance());
+    // Expect the ListView to pass an AWeapon instance (created/provisioned by the Shop)
+    WeaponInstance = Cast<AWeapon>(ListItemObject);
 
-	if (ListItemObject&&Cast<UWeaponDataAsset>(ListItemObject))
-	{
-		weaponDataAsset = Cast<UWeaponDataAsset>(ListItemObject);
+    if (WeaponInstance && WeaponText)
+    {
+        // If your AWeapon exposes a display name, use it; otherwise show class name
+        const FString Label = WeaponInstance->GetName(); // replace with your own display if available
+        WeaponText->SetText(FText::FromString(Label));
+    }
 
-		WeaponText->SetText(FText::FromString(weaponDataAsset->WeaponName));
+    // Initialize UI-only state from the weapon’s runtime flags if you want
+    bEquipped = (WeaponInstance && WeaponInstance->IsEquipped());
+    bBought = (WeaponInstance && WeaponInstance->IsPurchased());
 
+    ItemBoughtChanged(bBought);
+    ItemEquipChanged(bEquipped);
 
-
-		ItemBoughtChanged(weaponDataAsset->HasBeenBought);
-
-		ItemEquipChanged(weaponDataAsset->IsEquipped);
-
-
-		BuyButton->OnClicked.AddDynamic(this, &UListItem::TryToBuyItem);
-		EquipButton->OnClicked.AddDynamic(this, &UListItem::EquipItem);
-
-	}
+    if (BuyButton)
+    {
+        BuyButton->OnClicked.RemoveAll(this);
+        BuyButton->OnClicked.AddDynamic(this, &UListItem::TryToBuyItem);
+    }
+    if (EquipButton)
+    {
+        EquipButton->OnClicked.RemoveAll(this);
+        EquipButton->OnClicked.AddDynamic(this, &UListItem::EquipItem);
+    }
 }
 
 void UListItem::TryToBuyItem()
 {
-		if (character)
-		{
-			if (character->GetAttributes()->RemoveCurrency(weaponDataAsset->Price))
-				ItemBoughtChanged(true);
-		}
-		weaponDataAsset->BuyWeapon();
+    if (!character || !WeaponInstance) return;
+
+    // Deduct base price locally (UI sample). You can route this through a server Shop later.
+    const int32 PriceToPay = WeaponInstance->GetPrice();
+    if (UAttributeComponent* Attr = character->GetAttributes())
+    {
+        if (Attr->RemoveCurrency(PriceToPay))
+        {
+            // Mark purchase on the weapon instance and update UI
+            WeaponInstance->BuyWeapon();
+            ItemBoughtChanged(true);
+        }
+    }
 }
 
 void UListItem::EquipItem()
 {
-	if (weaponDataAsset->HasBeenBought)
-	{
-		gameInstance->SelectWeapon(weaponDataAsset);
-		ItemEquipChanged(true);
-	}
+    if (!WeaponInstance || !character) return;
 
+    // Only allow equip if purchased
+    if (bBought || WeaponInstance->IsPurchased())
+    {
+        // Equip this specific instance on the character
+        character->EquipExistingWeapon(WeaponInstance);
+
+        // Update UI state locally
+        ItemEquipChanged(true);
+
+        // Inform parent list to clear equip state on other entries
+        ItemEquippedEvent.Broadcast();
+    }
 }
 
-void UListItem::ItemBoughtChanged(bool itemBought)
+void UListItem::ItemBoughtChanged(bool bItemBought)
 {
-	if (itemBought)
-	{
-		weaponDataAsset->HasBeenBought = true;
+    bBought = bItemBought;
 
-		BuyButton->SetVisibility(ESlateVisibility::Hidden);
-		
-		EquipButton->SetVisibility(ESlateVisibility::Visible);
+    if (BuyButton)
+        BuyButton->SetVisibility(bBought ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
 
-		UpgradeButton->SetVisibility(ESlateVisibility::Visible);
+    if (EquipButton)
+        EquipButton->SetVisibility(bBought ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 
-	}
-	else
-	{
-		BuyButton->SetVisibility(ESlateVisibility::Visible);
-
-		EquipButton->SetVisibility(ESlateVisibility::Hidden);
-
-		UpgradeButton->SetVisibility(ESlateVisibility::Hidden);
-	}
+    if (UpgradeButton)
+        UpgradeButton->SetVisibility(bBought ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
-void UListItem::ItemEquipChanged(bool itemEquipped)
+void UListItem::ItemEquipChanged(bool bItemEquipped)
 {
-	if(itemEquipped)
-	{
-		EquipButton->SetVisibility(ESlateVisibility::Hidden);
-		ItemEquippedEvent.Broadcast();
-	}
-	else
-	{
-		EquipButton->SetVisibility(ESlateVisibility::Visible);
-	}
+    bEquipped = bItemEquipped;
 
+    if (EquipButton)
+    {
+        EquipButton->SetVisibility(bEquipped ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+    }
+    // In your master list, bind ItemEquippedEvent from each row and call ItemEquipChanged(false) on all others.
 }

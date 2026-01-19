@@ -1,84 +1,77 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+// CrazyArenaChaosGameInstance.cpp
 
 #include "CrazyArenaChaosGameInstance.h"
-
-#include "Components/AttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Characters/CPPCharacter.h"
-#include "Items/Weapons/WeaponDataAsset.h"
-#include "Structs/PersistentDataStruct.h"
-
-void UCrazyArenaChaosGameInstance::ResetAttributes()
-{
-	playerPersistingAttributes = DefaultPlayerAttributes;
-}
-
-void UCrazyArenaChaosGameInstance::SelectWeapon(UWeaponDataAsset* WeaponDataAsset)
-{
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		if (ACPPCharacter* character = Cast<ACPPCharacter>(UGameplayStatics::GetPlayerCharacter(World, 0)))
-		{
-			if (CurrentWeapon)
-				CurrentWeapon->SetWeaponSelected(false);
-
-			CurrentWeapon = WeaponDataAsset;
-
-			CurrentWeapon->SetWeaponSelected(true);
-			character->SetCurrentWeaponDataAsset(CurrentWeapon);
-			character->EquipNewWeapon(CurrentWeapon->WeaponToEquip);
-		}
-	}
-
-}
+#include "Engine/World.h"
+#include "Components/ActorComponent.h"
 
 void UCrazyArenaChaosGameInstance::Init()
 {
-	if (UWorld* World = GetWorld())
-	{
+    Super::Init();
+    // Snapshot defaults so ResetAttributes can restore them later
+    DefaultPlayerAttributes = playerPersistingAttributes;
+}
 
-	}
+void UCrazyArenaChaosGameInstance::ResetAttributes()
+{
+    playerPersistingAttributes = DefaultPlayerAttributes;
+}
 
-	DefaultPlayerAttributes = playerPersistingAttributes;
+void UCrazyArenaChaosGameInstance::RegisterShopActor(UActorComponent* InShop)
+{
+    if (IsValid(InShop))
+    {
+        ShopActor = InShop;
+    }
+}
+
+void UCrazyArenaChaosGameInstance::UnregisterShopActor()
+{
+    ShopActor.Reset();
 }
 
 void UCrazyArenaChaosGameInstance::AddEnemy(AEnemy* Enemy)
 {
-	EnemiesToBeDefeated.Add(Enemy);
+    if (Enemy)
+    {
+        EnemiesToBeDefeated.Add(Enemy);
+    }
 }
 
 void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
 {
-	if(EnemiesToBeDefeated.Contains(Enemy))
-	EnemiesToBeDefeated.Remove(Enemy);
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Cyan, TEXT("Enemy not found in list"));
-	}
+    if (EnemiesToBeDefeated.Contains(Enemy))
+    {
+        EnemiesToBeDefeated.Remove(Enemy);
+    }
+    else
+    {
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Cyan, TEXT("Enemy not found in list"));
+        }
+    }
 
-	if (EnemiesToBeDefeated.Num() <= 0)
-	{
-		AllEnemiesDefeated.Broadcast();
-		AllEnemiesDefeatedEvent();
-		//GetWorld()->SpawnActor(LevelTransiti);
-	}
+    if (EnemiesToBeDefeated.Num() <= 0)
+    {
+        AllEnemiesDefeated.Broadcast();
+        AllEnemiesDefeatedEvent();
+    }
 }
 
 void UCrazyArenaChaosGameInstance::LoadShop()
 {
-	UWorld* World = GetWorld();
-	
-	if (World)
-		UGameplayStatics::OpenLevelBySoftObjectPtr(World, ShopLevel);
+    if (UWorld* World = GetWorld())
+    {
+        UGameplayStatics::OpenLevelBySoftObjectPtr(World, ShopLevel);
+    }
 }
 
 void UCrazyArenaChaosGameInstance::RestartLevel()
 {
-	UWorld* World = GetWorld();
-
-	if (World)
-		UGameplayStatics::OpenLevel(this, FName(World->GetName()), false);
+    if (UWorld* World = GetWorld())
+    {
+        UGameplayStatics::OpenLevel(this, FName(World->GetName()), /*bAbsolute=*/false);
+    }
 }
-
