@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Structs/PersistentDataStruct.h"
 #include "CrazyArenaChaosGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -13,6 +14,9 @@ class ACrazyArenaChaosGameMode : public AGameModeBase
 
 public:
 	ACrazyArenaChaosGameMode();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	FWaveInfo WaveInfo;
 };
 
 

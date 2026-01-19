@@ -25,6 +25,9 @@ public:
     // -------------------- Wave Tracking --------------------
     UPROPERTY(BlueprintReadOnly, Category = "Wave Attributes")
     TArray<AEnemy*> EnemiesToBeDefeated;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Wave Attributes")
+	FWaveInfo WaveInfo {};
 
     // -------------------- Level Transition --------------------
     UPROPERTY(BlueprintReadWrite)

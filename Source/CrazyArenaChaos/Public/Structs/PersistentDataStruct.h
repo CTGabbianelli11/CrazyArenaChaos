@@ -5,6 +5,26 @@
 #include "CoreMinimal.h"
 #include "PersistentDataStruct.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct FWaveInfo
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	int32 WaveNumber;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	float EnemyHealthMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	float EnemyDamageMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	int32 MinEnemies;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	int32 MaxEnemies;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	float HazardDamage;
+};
+
+
 USTRUCT(BlueprintType)
 struct FStructPersistentData
 {
@@ -15,4 +35,7 @@ struct FStructPersistentData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Persistent Data")
 	int32 WaveNumber{};
+	
 };
+
+
