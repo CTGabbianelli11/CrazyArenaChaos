@@ -1,27 +1,27 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+// PickupInterface.h
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "PickupInterface.generated.h"
 
-// This class does not need to be modified.
-UINTERFACE(MinimalAPI)
-class UPickupInterface : public UInterface
+UINTERFACE(BlueprintType)
+class CRAZYARENACHAOS_API UPickupInterface : public UInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };
 
-/**
- * 
- */
 class CRAZYARENACHAOS_API IPickupInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void SetOverlappingItem(class AItem* item);
-	virtual void AddCurrency(class ACurrency* currency);
+    /** BP + C++ overridable. Implement _Implementation in implementing classes. */
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Pickup")
+    void AddCurrency(class ACurrency* Currency);
+
+    /** BP + C++ overridable. Implement _Implementation in implementing classes. */
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Pickup")
+    void SetOverlappingItem(class AItem* Item);
 };

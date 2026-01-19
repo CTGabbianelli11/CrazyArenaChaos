@@ -20,7 +20,7 @@ class AItem;
 class AWeapon;
 class ACurrency;
 class UAnimInstance;
-class UWeaponDataAsset; // Forward declare for BP helper only
+class UWeaponDataAsset;
 
 UCLASS()
 class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
@@ -28,40 +28,36 @@ class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInter
     GENERATED_BODY()
 
 public:
-    ACPPCharacter();
 
+    ACPPCharacter();
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-    // Interfaces
+    // Interface overrides
     virtual void GetHit(const FVector& impectPoint) override;
     virtual void CharacterDied() override;
 
-    /** Collision gate for the weapon box during attack montage notifies */
+    // Weapon Collision
     UFUNCTION(BlueprintCallable)
     void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
-    /** Shop-authoritative path: equip an already-spawned weapon instance */
+    // Equip an existing weapon instance
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     void EquipExistingWeapon(AWeapon* WeaponInstance);
 
-    /**
-     * Blueprint helper for Shop UI/logic:
-     * Spawns a weapon from a Data Asset, initializes from config once, and optionally equips it.
-     * This exists purely to provide a valid World context for Blueprint-only shops.
-     */
+    // Spawn from DataAsset
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     AWeapon* BP_SpawnWeaponFromDataAsset(UWeaponDataAsset* Config, bool bEquipNow);
 
     UAttributeComponent* GetAttributes() { return attributeComponent; }
 
 protected:
+
     virtual void BeginPlay() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
     UAttributeComponent* attributeComponent;
 
-    /** Currently equipped, live weapon instance */
     UPROPERTY(BlueprintReadWrite, Category = "Weapon")
     AWeapon* equippedWeapon;
 
@@ -89,17 +85,14 @@ protected:
     UFUNCTION(BlueprintImplementableEvent)
     void CharacterDiedEvent();
 
-    // Input callbacks
+    // Input Callbacks
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void Interact(const FInputActionValue& Value);
 
-    /** Attach weapon instance without re-initialization (used by interact/store-provided instance). */
     void EquipWeapon(AWeapon* overlappingWeapon);
-
     void Attack(const FInputActionValue& Value);
 
-    // Play montage functions
     void PlayAttackMontage();
 
 protected:
@@ -110,25 +103,38 @@ protected:
     bool CanAttack();
 
 private:
+
     ECharacterState state = ECharacterState::ECS_Unequipped;
 
     UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
     EactionState actionState = EactionState::EAS_Unoccupied;
 
-    UPROPERTY(VisibleAnywhere) UCameraComponent* CameraComponent;
-    UPROPERTY(VisibleAnywhere) USpringArmComponent* SpringArm;
+    UPROPERTY(VisibleAnywhere)
+    UCameraComponent* CameraComponent;
 
-    UPROPERTY(VisibleInstanceOnly) AItem* overlappingItem;
+    UPROPERTY(VisibleAnywhere)
+    USpringArmComponent* SpringArm;
 
-    // Animation Montages
-    UPROPERTY(EditDefaultsOnly, Category = "Montages") UAnimMontage* AttackMontage;
-    UPROPERTY(EditDefaultsOnly, Category = "Montages") UAnimMontage* HitReactMontage;
+    UPROPERTY(VisibleInstanceOnly)
+    AItem* overlappingItem;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Montages")
+    UAnimMontage* AttackMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Montages")
+    UAnimMontage* HitReactMontage;
 
 public:
-    FORCEINLINE ECharacterState GetCharacterState() const { return state; }
-    virtual void SetOverlappingItem(AItem* item) override;
-    virtual void AddCurrency(ACurrency* currency) override;
 
-    UFUNCTION(BlueprintCallable) void EnterShoppingState();
-    UFUNCTION(BlueprintCallable) void EndShoppingState();
+    FORCEINLINE ECharacterState GetCharacterState() const { return state; }
+
+    // ----------- FIXED INTERFACE OVERRIDES -----------
+    virtual void SetOverlappingItem_Implementation(AItem* Item) override;
+    virtual void AddCurrency_Implementation(ACurrency* Currency) override;
+
+    UFUNCTION(BlueprintCallable)
+    void EnterShoppingState();
+
+    UFUNCTION(BlueprintCallable)
+    void EndShoppingState();
 };

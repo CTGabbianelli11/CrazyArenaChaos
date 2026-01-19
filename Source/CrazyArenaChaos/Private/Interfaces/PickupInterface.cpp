@@ -1,13 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
-
+// PickupInterface.cpp
 #include "Interfaces/PickupInterface.h"
 
-void IPickupInterface::SetOverlappingItem(AItem* Item)
-{
-
-}
-void IPickupInterface::AddCurrency(ACurrency* currency)
-{
-
-}
+// Intentionally left without any _Implementation definitions.
+// Implementations belong in the classes that implement this interface
+// (e.g., ACPPCharacter::AddCurrency_Implementation / SetOverlappingItem_Implementation).

@@ -14,8 +14,6 @@
 #include "Components/BoxComponent.h"
 #include "CrazyArenaChaosGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-
-// Included only for the BP helper that spawns from Data Asset
 #include "Items/Weapons/WeaponDataAsset.h"
 
 ACPPCharacter::ACPPCharacter()
@@ -51,7 +49,6 @@ void ACPPCharacter::BeginPlay()
         }
     }
 
-    // Load persisted currency
     if (UGameInstance* GI = GetGameInstance())
     {
         if (UCrazyArenaChaosGameInstance* CAC_GI = Cast<UCrazyArenaChaosGameInstance>(GI))
@@ -67,11 +64,15 @@ void ACPPCharacter::Move(const FInputActionValue& Value)
     const FRotator controlRotation = GetControlRotation();
     const FRotator YawRotation(0.f, controlRotation.Yaw, 0.f);
 
-    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-    AddMovementInput(ForwardDirection, movementVector.Y);
+    AddMovementInput(
+        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X),
+        movementVector.Y
+    );
 
-    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-    AddMovementInput(RightDirection, movementVector.X);
+    AddMovementInput(
+        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y),
+        movementVector.X
+    );
 }
 
 void ACPPCharacter::Look(const FInputActionValue& Value)
@@ -83,7 +84,6 @@ void ACPPCharacter::Look(const FInputActionValue& Value)
 
 void ACPPCharacter::Interact(const FInputActionValue& /*Value*/)
 {
-    // Equip overlapping world weapon instance (e.g., dropped item that is already an AWeapon)
     if (AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem))
     {
         EquipExistingWeapon(overlappingWeapon);
@@ -94,20 +94,14 @@ void ACPPCharacter::EquipWeapon(AWeapon* overlappingWeapon)
 {
     if (!overlappingWeapon) return;
 
-    // Remove previously equipped weapon
     if (equippedWeapon != nullptr)
     {
-        // Hide it safely if you don’t render inventory in-world
-        equippedWeapon->Unequip(/*bReturnToInventory=*/false);
-        //equippedWeapon->Destroy();
+        equippedWeapon->Unequip(false);
     }
 
-    // Attach; AWeapon::Equip will re-apply runtime scale AFTER attachment (fixes scale mismatch)
     overlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
     equippedWeapon = overlappingWeapon;
     state = ECharacterState::ECS_EquippedOneHandedWeapon;
-
-    // Mark as equipped (fires weapon-side event); do NOT re-initialize here
     equippedWeapon->SetEquipped(true);
 }
 
@@ -123,11 +117,9 @@ AWeapon* ACPPCharacter::BP_SpawnWeaponFromDataAsset(UWeaponDataAsset* Config, bo
     UWorld* World = GetWorld();
     if (!World) return nullptr;
 
-    // Spawn runtime weapon from the class indicated in the Data Asset
     AWeapon* NewWeapon = World->SpawnActor<AWeapon>(Config->WeaponToEquip);
     if (!NewWeapon) return nullptr;
 
-    // One-time, immutable -> runtime copy
     NewWeapon->InitializeFromDataAsset(Config);
 
     if (bEquipNow)
@@ -167,13 +159,13 @@ void ACPPCharacter::EndShoppingState()
 
 bool ACPPCharacter::CanAttack()
 {
-    return (actionState == EactionState::EAS_Unoccupied || actionState == EactionState::EAS_Comboing) &&
-        state != ECharacterState::ECS_Unequipped;
+    return (actionState == EactionState::EAS_Unoccupied ||
+        actionState == EactionState::EAS_Comboing)
+        && state != ECharacterState::ECS_Unequipped;
 }
 
 void ACPPCharacter::GetHit(const FVector& /*impactPoint*/)
 {
-    // Intentionally left blank
 }
 
 void ACPPCharacter::CharacterDied()
@@ -183,7 +175,6 @@ void ACPPCharacter::CharacterDied()
 
     if (UWorld* World = GetWorld())
     {
-        ACharacter* character = UGameplayStatics::GetPlayerCharacter(this, 0);
         GetMesh()->SetSimulatePhysics(true);
         GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
     }
@@ -235,7 +226,8 @@ void ACPPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+    if (UEnhancedInputComponent* EnhancedInputComponent =
+        CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Look);
@@ -254,15 +246,19 @@ void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionE
     }
 }
 
-void ACPPCharacter::SetOverlappingItem(AItem* item)
+//
+// -------- Pickup Interface Overrides --------
+//
+
+void ACPPCharacter::SetOverlappingItem_Implementation(AItem* Item)
 {
-    overlappingItem = item;
+    overlappingItem = Item;
 }
 
-void ACPPCharacter::AddCurrency(ACurrency* currency)
+void ACPPCharacter::AddCurrency_Implementation(ACurrency* Currency)
 {
-    if (attributeComponent && currency)
+    if (attributeComponent && Currency)
     {
-        attributeComponent->AddCurrency(currency->GetCurrency());
+        attributeComponent->AddCurrency(Currency->GetCurrency());
     }
 }

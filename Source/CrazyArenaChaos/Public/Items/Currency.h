@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -6,19 +5,18 @@
 #include "Items/Item.h"
 #include "Currency.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class CRAZYARENACHAOS_API ACurrency : public AItem
 {
-	GENERATED_BODY()
-protected:
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+    GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Currency Poperties")
-	int32 currencyValue;
-	
+protected:
+    virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+    UPROPERTY(EditAnywhere, Category = "Currency Properties")
+    int32 currencyValue;
+
 public:
-	FORCEINLINE int32 GetCurrency() { return currencyValue; }
+    FORCEINLINE int32 GetCurrency() { return currencyValue; }
 };
