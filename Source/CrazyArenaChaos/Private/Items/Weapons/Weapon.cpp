@@ -168,7 +168,7 @@ void AWeapon::Unequip(bool /*bReturnToInventory*/, USceneComponent* /*InventoryP
 {
     // Flip equipped state and notify listeners (Shop shelf will listen to this)
     bIsEquipped = false;
-    //OnEquipped.Broadcast(false);
+    OnEquipped.Broadcast(false);
 
     // Turn off combat collisions/traces
     if (WeaponBoxComponent)
