@@ -21,6 +21,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hazard Settings")
+	float DamageMultiplier = 1.0f;
+	
+	
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category = "Hazard Events")
+	void ApplyWaveData();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
