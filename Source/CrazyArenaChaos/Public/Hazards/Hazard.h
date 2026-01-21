@@ -6,6 +6,23 @@
 #include "GameFramework/Actor.h"
 #include "Hazard.generated.h"
 
+
+UENUM(BlueprintType)
+enum class EHazardType : uint8
+{
+	// Default value, usually 0
+	HT_None        UMETA(DisplayName = "None"),
+	HT_ExplodingBarrel      UMETA(DisplayName = "Exploding Barrel"),
+	HT_FlameThrower      UMETA(DisplayName = "Flame Thrower"),
+	HT_Landmine      UMETA(DisplayName = "Landmine"),
+	HT_Plane      UMETA(DisplayName = "Plane"),
+	HT_RotatingBlade      UMETA(DisplayName = "Rotating Blade")
+};
+
+
+
+
+
 class UCapsuleComponent;
 
 UCLASS()
@@ -26,6 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hazard Settings")
 	float DamageMultiplier = 1.0f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hazard Settings")
+	EHazardType HazardType ;
+	
 	
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category = "Hazard Events")
 	void ApplyWaveData();
@@ -36,5 +56,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* Mesh;
+	
+	UFUNCTION(BlueprintCallable, Category = "Hazard Events")
+	virtual void DeactivateHazard();
 
 };

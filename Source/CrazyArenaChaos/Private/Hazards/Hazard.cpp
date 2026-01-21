@@ -27,6 +27,13 @@ void AHazard::BeginPlay()
 	
 }
 
+void AHazard::DeactivateHazard()
+{
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+}
+
 // Called every frame
 void AHazard::Tick(float DeltaTime)
 {
