@@ -12,7 +12,6 @@ class UAnimMontage;
 class UAttributeComponent;
 class UNiagaraSystem;
 class UCrowdExcitementComponent;
-class UAC_HitStop;
 
 UCLASS()
 class CRAZYARENACHAOS_API AEnemy : public ACharacter,public IHitInterface,public IDeathInterface
@@ -58,8 +57,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Particle System")
 	UNiagaraSystem* HitSystem;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Hit Stop System")
-	UAC_HitStop* hitStopComponent;
+
 
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* attributes;

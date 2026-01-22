@@ -22,6 +22,7 @@ class ACurrency;
 class UAnimInstance;
 class UWeaponDataAsset;
 class UTimelineComponent;
+class UAC_HitStop;
 
 UCLASS()
 class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
@@ -55,6 +56,9 @@ public:
 
     UAttributeComponent* GetAttributes() { return attributeComponent; }
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UAC_HitStop* hitStopComponent;
+
 protected:
 
     virtual void BeginPlay() override;
@@ -83,6 +87,8 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* AttackAction;
+
+
 
     int attackNumber = 0;
 
