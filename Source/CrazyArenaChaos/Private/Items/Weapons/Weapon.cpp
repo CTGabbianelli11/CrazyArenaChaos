@@ -9,6 +9,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Items/Weapons/WeaponDataAsset.h"
+#include "Components/AC_HitStop.h"
 
 AWeapon::AWeapon()
 {
@@ -250,7 +251,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
         ETraceTypeQuery::TraceTypeQuery1,
         false,
         ActorsToIgnore,
-        EDrawDebugTrace::ForDuration,
+        EDrawDebugTrace::None,
         BoxHit,
         true
     );
@@ -277,6 +278,11 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
         if (HitSound)
         {
             UGameplayStatics::PlaySoundAtLocation(this, HitSound, BoxHit.ImpactPoint, 1.f, 1.f, 0.1f);
+        }
+
+        if (Cast<ACPPCharacter>(GetOwner()))
+        {
+            Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f);
         }
     }
     else

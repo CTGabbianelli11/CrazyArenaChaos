@@ -15,6 +15,7 @@
 #include "CrazyArenaChaosGameInstance.h"
 #include "Components/AttributeComponent.h"
 #include "NiagaraComponent.h"
+#include "Components/AC_HitStop.h"
 #include "NiagaraFunctionLibrary.h"
 
 
@@ -29,6 +30,8 @@ AEnemy::AEnemy()
 	GetMesh()->SetGenerateOverlapEvents(true);
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	hitStopComponent = CreateDefaultSubobject<UAC_HitStop>(TEXT("HitStop"));
 
 	attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 	CrowdExcitementComponent = CreateDefaultSubobject<UCrowdExcitementComponent>(TEXT("Crowd Excitement"));
@@ -84,6 +87,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 	if (attributes && attributes->IsAlive())
 	{
+		hitStopComponent->BeginHitStop(.15f);
 		DirectionalHitReact(impactPoint,ToHit);
 	}
 	else if (attributes)
@@ -105,7 +109,9 @@ void AEnemy::CharacterDied()
 	{
 		instance->RemoveEnemy(this);
 	}
+	
 	DropCurrency();
+	
 	CrowdExcitementComponent->OnKill();
 }
 void AEnemy::DropCurrency()
