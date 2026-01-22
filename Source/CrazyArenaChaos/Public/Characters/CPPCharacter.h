@@ -21,6 +21,7 @@ class AWeapon;
 class ACurrency;
 class UAnimInstance;
 class UWeaponDataAsset;
+class UTimelineComponent;
 
 UCLASS()
 class CRAZYARENACHAOS_API ACPPCharacter : public ACharacter, public IPickupInterface, public IHitInterface, public IDeathInterface
@@ -36,6 +37,9 @@ public:
     // Interface overrides
     virtual void GetHit(const FVector& impectPoint) override;
     virtual void CharacterDied() override;
+
+    //Combat Helpers
+    void MovePlayerToEnemy(AActor* player, AActor* enemy);
 
     // Weapon Collision
     UFUNCTION(BlueprintCallable)
@@ -114,6 +118,8 @@ private:
 
     UPROPERTY(VisibleAnywhere)
     USpringArmComponent* SpringArm;
+    UPROPERTY(VisibleAnywhere)
+    UTimelineComponent* AttackTimeline;
 
     UPROPERTY(VisibleInstanceOnly)
     AItem* overlappingItem;

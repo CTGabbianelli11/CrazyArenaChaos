@@ -15,6 +15,9 @@
 #include "CrazyArenaChaosGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Items/Weapons/WeaponDataAsset.h"
+#include <Kismet/KismetMathLibrary.h>
+#include "CrazyArenaChaos/DebugMacros.h"
+#include <Components/TimelineComponent.h>
 
 ACPPCharacter::ACPPCharacter()
 {
@@ -134,10 +137,42 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
 {
     if (CanAttack())
     {
+        TArray<AActor*> ActorsInFront;
+        FHitResult Hit;
+        UWorld* world = GetWorld();
+        if (world)
+        {
+            for (int i = -5; i < 5; i++)
+            {
+                UKismetSystemLibrary::LineTraceSingle(
+                    world,
+                    GetActorLocation(),
+                    GetActorLocation() + UKismetMathLibrary::GreaterGreater_VectorRotator(GetActorForwardVector(), FRotator(0, 10 * i, 0)) * 400.f,
+                    ETraceTypeQuery::TraceTypeQuery1,
+                    false,
+                    ActorsInFront,
+                    EDrawDebugTrace::None,
+                    Hit,
+                    true);
+                if (Hit.GetActor())
+                {
+                    ActorsInFront.AddUnique(Hit.GetActor());
+                    //DRAW_SPHERE_COLOR(Hit.GetActor()->GetActorLocation(), FColor::Orange);
+                }
+            }
+        }
+
+        if (ActorsInFront.Num() > 0)
+        {
+            MovePlayerToEnemy(this, ActorsInFront[0]);
+        }
+
         PlayAttackMontage();
         actionState = EactionState::EAS_Attacking;
     }
 }
+
+
 
 void ACPPCharacter::EnterShoppingState()
 {
@@ -180,6 +215,25 @@ void ACPPCharacter::CharacterDied()
     }
 
     CharacterDiedEvent();
+}
+
+void ACPPCharacter::MovePlayerToEnemy(AActor* player, AActor* enemy)
+{
+    FVector delta = player->GetActorLocation() - enemy->GetActorLocation();
+    FVector direction = UKismetMathLibrary::Normal(delta, .001f);
+    FVector magnitude = direction * 40.f;
+
+    FVector positionOffset = magnitude + enemy->GetActorLocation();
+
+    FRotator forwardRotation = UKismetMathLibrary::FindLookAtRotation(player->GetActorLocation(), enemy->GetActorLocation());
+
+    FLatentActionInfo LatentInfo;
+    LatentInfo.CallbackTarget = this;
+    LatentInfo.ExecutionFunction = FName("MoveToTargetFinished");
+    LatentInfo.Linkage = 0;
+    LatentInfo.UUID = 0;
+    UKismetSystemLibrary::MoveComponentTo(GetRootComponent(), positionOffset, forwardRotation, true, true, .3f, true, EMoveComponentAction::Move, LatentInfo);
+
 }
 
 void ACPPCharacter::PlayAttackMontage()
