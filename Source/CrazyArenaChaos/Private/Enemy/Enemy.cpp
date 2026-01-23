@@ -87,7 +87,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 	if (attributes && attributes->IsAlive())
 	{
-		hitStopComponent->BeginHitStop(.15f);
+		hitStopComponent->BeginHitStop(.25f,0,30,20);
 		DirectionalHitReact(impactPoint,ToHit);
 	}
 	else if (attributes)
