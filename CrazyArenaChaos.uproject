@@ -9,7 +9,10 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"UMG",
+				"Engine",
+				"CoreUObject",
+				"AIModule"
 			]
 		}
 	],
@@ -28,8 +31,7 @@
 		},
 		{
 			"Name": "VisualStudioTools",
-			"Enabled": false,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2",
+			"Enabled": true,
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]

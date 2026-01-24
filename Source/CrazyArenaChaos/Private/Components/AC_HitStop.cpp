@@ -5,7 +5,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
@@ -37,11 +38,13 @@ void UAC_HitStop::BeginPlay()
 	if (skeletalMesh)
 		MeshRelativeLocation = skeletalMesh->GetRelativeLocation();
 	// ...
+
 	
 }
 
 void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpeed,float shakeAmplitude)
 {	
+	Duration = duration;
 	TimeDialation = timeDialation;
 	ShakeSpeed = 1.f / shakeSpeed;
 	ShakeAmplitude = shakeAmplitude;
@@ -51,8 +54,18 @@ void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpe
 
 	MeshShakeStepTimerEvent.BindUFunction(this, FName("ApplyMeshShakeStep"));
 
-	UKismetSystemLibrary::K2_SetTimerDelegate(hitStopTimerEvent, duration,false,false);
+	hitStopTimerHandle =UKismetSystemLibrary::K2_SetTimerDelegate(hitStopTimerEvent, duration,false,false);
 	timerHandle = UKismetSystemLibrary::K2_SetTimerDelegate(MeshShakeStepTimerEvent, ShakeSpeed,true,false);
+
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		materialInstance = UKismetMaterialLibrary::CreateDynamicMaterialInstance(world, materialInterface);
+		if(materialInstance!=NULL)
+		materialInstance->SetScalarParameterValue(TEXT("Speed"), 20.f);
+
+		CharacterActor->GetMesh()->SetOverlayMaterial(materialInstance);
+	}
 }
 
 void UAC_HitStop::EndHitStop()
@@ -66,6 +79,7 @@ void UAC_HitStop::EndHitStop()
 
 		CharacterActor->CustomTimeDilation = 1;
 
+		CharacterActor->GetMesh()->SetOverlayMaterial(NULL);
 	}
 }
 
@@ -78,12 +92,13 @@ void UAC_HitStop::ApplyMeshShakeStep()
 		APlayerController* playerController = UGameplayStatics::GetPlayerController(world,0);
 		if (playerController)
 		{
+
 			inverseTransformDirection.X = UKismetMathLibrary::InverseTransformDirection(CharacterActor->GetActorTransform(), playerController->PlayerCameraManager->GetActorRightVector()).X;
 			inverseTransformDirection.Y = UKismetMathLibrary::InverseTransformDirection(CharacterActor->GetActorTransform(), playerController->PlayerCameraManager->GetActorRightVector()).Y;
 
 			FHitResult SweepHitResult;
 
-			skeletalMesh->K2_SetRelativeLocation(MeshRelativeLocation + inverseTransformDirection * (ShakeAmplitude * offsetDirection), false,SweepHitResult, true);
+			skeletalMesh->K2_SetRelativeLocation(MeshRelativeLocation + inverseTransformDirection * (ShakeAmplitude * offsetDirection)* GetFloatFromCurve(), false, SweepHitResult, true);
 		}
 
 	}
@@ -91,6 +106,22 @@ void UAC_HitStop::ApplyMeshShakeStep()
 
 
 	offsetDirection *= -1;
+}
+
+float UAC_HitStop::GetFloatFromCurve()
+{
+	UWorld* world = GetWorld();
+	if (!world)
+		return 1.f;
+
+	if (ShakeIntensityCurve)
+	{
+		float percentageOfTimePassed = UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(world, hitStopTimerHandle) / Duration;
+		float shakeFromCurve = ShakeIntensityCurve->GetFloatValue(percentageOfTimePassed);
+
+		return shakeFromCurve;
+	}
+	return 1.0f;
 }
 
 

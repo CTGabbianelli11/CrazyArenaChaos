@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
+
 #include "GameFramework/Character.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "AC_HitStop.generated.h"
 
 class USkeletalMeshComponent;
@@ -26,6 +27,10 @@ public:
 	USkeletalMeshComponent* skeletalMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HitShake")
 	FVector MeshRelativeLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HitShake")
+	UCurveFloat* ShakeIntensityCurve;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Material")
+	UMaterialInterface* materialInterface;
 protected:
 	ACharacter* CharacterActor;
 protected:
@@ -37,11 +42,15 @@ protected:
 	FTimerDynamicDelegate hitStopTimerEvent;
 	FTimerDynamicDelegate MeshShakeStepTimerEvent;
 	FTimerHandle timerHandle;
+	FTimerHandle hitStopTimerHandle;
 
+	float Duration = 1;
 	float ShakeAmplitude = 20;
 	float offsetDirection = 1;
 	float TimeDialation = 1;
 	float ShakeSpeed = 1;
+
+	UMaterialInstanceDynamic* materialInstance;
 public:	
 
 	UFUNCTION(BlueprintCallable)
@@ -50,6 +59,8 @@ public:
 	void EndHitStop();
 	UFUNCTION(BlueprintCallable)
 	void ApplyMeshShakeStep();
+	float GetFloatFromCurve();
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
