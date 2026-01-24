@@ -192,6 +192,7 @@ void AWeapon::Unequip(bool /*bReturnToInventory*/, USceneComponent* /*InventoryP
     SetOwner(nullptr);
     SetInstigator(nullptr);
     OnUnequipped.Broadcast(bIsEquipped);
+
 }
 
 void AWeapon::SetEquipped(bool bInEquipped)
@@ -199,6 +200,7 @@ void AWeapon::SetEquipped(bool bInEquipped)
     if (bIsEquipped == bInEquipped) return;
     bIsEquipped = bInEquipped;
     OnEquipped.Broadcast(bIsEquipped);
+
 }
 
 void AWeapon::BeginPlay()

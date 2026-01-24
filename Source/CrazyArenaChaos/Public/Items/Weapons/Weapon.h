@@ -79,6 +79,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Weapon|State")
     void SetEquipped(bool bInEquipped);
 
+
     /** Event-driven Unequip (does not hide by default; Shop/Shelf handles parking). */
     UFUNCTION(BlueprintCallable, Category = "Weapon|State")
     void Unequip(bool bReturnToInventory = true, USceneComponent* InventoryParent = nullptr, FName InventorySocket = NAME_None);
