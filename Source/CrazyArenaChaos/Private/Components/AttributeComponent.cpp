@@ -38,6 +38,12 @@ bool UAttributeComponent::IsAlive()
 	return health > 0;
 }
 
+void UAttributeComponent::ApplyHealthMultiplier()
+{
+	maxHealth *= healthMultiplier;
+	health = maxHealth;
+}
+
 void UAttributeComponent::AddCurrency(int32 AmountOfCurrency)
 {
 	Currency += AmountOfCurrency;

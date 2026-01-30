@@ -20,6 +20,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Actor Attributes")
+	float healthMultiplier = 1.0f;
+	
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -36,7 +39,9 @@ public:
 	void RecieveDamage(float _damage);
 	float GetHealthPercentage();
 	bool IsAlive();
-
+	UFUNCTION(BlueprintCallable)
+	void ApplyHealthMultiplier();
+	
 	void AddCurrency(int32 AmountOfCurrency);
 	bool RemoveCurrency(int32 AmountOfCurrency);
 
