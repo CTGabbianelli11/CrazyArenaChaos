@@ -4,6 +4,7 @@
 #include "NavigationSystem.h"
 #include "DrawDebugHelpers.h"
 #include "CrazyArenaChaosGameInstance.h"
+#include "Components/CapsuleComponent.h"
 #include "Interfaces/Spawnable.h"
 
 ASpawnTool::ASpawnTool()
@@ -127,6 +128,8 @@ int32 ASpawnTool::GetSpawnCount(const FSpawnEntry& Entry) const
 	return StreamOpt ? StreamOpt->RandRange(Min, Max) : FMath::RandRange(Min, Max);
 }
 
+UE_DISABLE_OPTIMIZATION
+
 void ASpawnTool::SpawnAll()
 {
 	//return if there is no enemy types to spawn
@@ -152,6 +155,16 @@ void ASpawnTool::SpawnAll()
 			FRotator Rot = FRotator::ZeroRotator;
 			if (!bAlignToGround) { FVector Tmp = Loc; AlignToGround(Tmp, Rot); }
 
+			//~ if we're spawning a nav agent, then spawn it on the nav mesh. 
+			if (ACharacter* AsCharacter = E.Class.Get()->GetDefaultObject<ACharacter>()) 
+			{
+				FVector NavLoc;
+				const bool bCanProjectLocToNav = UNavigationSystemV1::K2_ProjectPointToNavigation(this, Loc, NavLoc, nullptr, nullptr, NavQueryExtent);
+				Loc = bCanProjectLocToNav ? NavLoc : Loc;
+				const float AgentHeight = AsCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				Loc.Z += AgentHeight;
+			}
+
 			FActorSpawnParameters Params;
 			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 			Params.Owner = this;
@@ -176,6 +189,8 @@ void ASpawnTool::SpawnAll()
 		bHasSpawned = true;
 	}
 }
+
+UE_ENABLE_OPTIMIZATION
 
 void ASpawnTool::PreviewSpawn()
 {
