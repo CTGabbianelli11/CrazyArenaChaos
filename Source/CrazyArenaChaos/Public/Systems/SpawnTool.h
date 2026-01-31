@@ -64,6 +64,10 @@ protected:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
+	/** The Bounds used to project a spawn point onto the navigation mesh before spawning. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Getter, Category = "Spawn", meta=(BlueprintProtected))
+	FVector NavQueryExtent = FVector(100.f, 100.f, 2000.f);
+
 private:
 	UPROPERTY() USphereComponent* Area = nullptr;
 	TOptional<FRandomStream> StreamOpt;
@@ -94,4 +98,8 @@ private:
 	UFUNCTION(CallInEditor, Category = "Spawn|Preview")
 	void ClearPreview();     // Clear Preview
 	void ResetSpawn();    
+	
+public:
+	FVector GetNavQueryExtent() const { return NavQueryExtent; }
+	
 };

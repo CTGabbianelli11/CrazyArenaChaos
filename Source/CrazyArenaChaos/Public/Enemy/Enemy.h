@@ -44,6 +44,15 @@ Play montage functions
 	void PlayHitReactMontage(const FName& sectionName);
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(VisibleAnywhere,blueprintReadWrite)
+	UAttributeComponent* attributes;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
+	float DamageMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
+	float BaseDamage;
+
 private:
 	/*
 	*Animation Montages
@@ -61,8 +70,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Hit Stop System")
 	UAC_HitStop* hitStopComponent;
 
-	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* attributes;
+	
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sound Effects")
 	USoundWave* hitSound;

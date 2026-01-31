@@ -10,18 +10,13 @@ USTRUCT(BlueprintType)
 struct FWaveInfo
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
-	int32 WaveNumber{0};
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
 	float EnemyHealthMultiplier{1.0f};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
 	float EnemyDamageMultiplier{1.0f};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
-	int32 MinEnemies{0};
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
-	int32 MaxEnemies{0};
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
-	float HazardDamage{1.0f};
+	float HazardDamageMultiplier{1.0f};
 };
 
 
