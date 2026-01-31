@@ -87,7 +87,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 	if (attributes && attributes->IsAlive())
 	{
-		hitStopComponent->BeginHitStop(.25f,0,30,20);
+		hitStopComponent->BeginHitStop(.1f,0,30,20);
 		DirectionalHitReact(impactPoint,ToHit);
 	}
 	else if (attributes)
@@ -147,16 +147,16 @@ void AEnemy::DirectionalHitReact(const FVector& impactPoint,const FVector impact
 	}
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 
-	FName Section("FromFront");
-	if (Theta >= -45.f && Theta < 45.f)
-	{
-		Section = FName("FromFront");
-	}
-	//Note : Uncomment when animations in montage are added
-	//else if( Theta >= -135.f && Theta < 45.f)
+	FName Section("FromLeft");
+	//if (Theta >= -45.f && Theta < 45.f)
 	//{
-	//	Section = FName("FromLeft");
+		//Section = FName("FromFront");
 	//}
+	//Note : Uncomment when animations in montage are added
+	if( Theta >= -135.f && Theta < 45.f)
+	{
+		Section = FName("FromRight");
+	}
 	//else if( Theta >= 45.f && Theta < 135.f)
 	//{
 	//	Section = FName("FromRight");

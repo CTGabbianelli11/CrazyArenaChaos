@@ -224,7 +224,7 @@ void ACPPCharacter::MovePlayerToEnemy(AActor* player, AActor* enemy)
 {
     FVector delta = player->GetActorLocation() - enemy->GetActorLocation();
     FVector direction = UKismetMathLibrary::Normal(delta, .001f);
-    FVector magnitude = direction * 80.f;
+    FVector magnitude = direction * 100.f;
 
     FVector positionOffset = magnitude + enemy->GetActorLocation();
 
