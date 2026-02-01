@@ -243,7 +243,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
     }
 
     FHitResult BoxHit;
-    const FVector HalfSize(5.f, 5.f, 5.f);
+    const FVector HalfSize(10.f, 10.f, 10.f);
     UKismetSystemLibrary::BoxTraceSingle(
         this,
         Start,
