@@ -145,12 +145,12 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
         UWorld* world = GetWorld();
         if (world)
         {
-            for (int i = -5; i < 5; i++)
+            for (int i = -10; i < 10; i++)
             {
                 UKismetSystemLibrary::LineTraceSingle(
                     world,
                     GetActorLocation(),
-                    GetActorLocation() + UKismetMathLibrary::GreaterGreater_VectorRotator(GetActorForwardVector(), FRotator(0, 10 * i, 0)) * 400.f,
+                    GetActorLocation() + UKismetMathLibrary::GreaterGreater_VectorRotator(GetActorForwardVector(), FRotator(0, 5 * i, 0)) * 400.f,
                     ETraceTypeQuery::TraceTypeQuery1,
                     false,
                     ActorsInFront,
@@ -224,7 +224,7 @@ void ACPPCharacter::MovePlayerToEnemy(AActor* player, AActor* enemy)
 {
     FVector delta = player->GetActorLocation() - enemy->GetActorLocation();
     FVector direction = UKismetMathLibrary::Normal(delta, .001f);
-    FVector magnitude = direction * 100.f;
+    FVector magnitude = direction * 150.f;
 
     FVector positionOffset = magnitude + enemy->GetActorLocation();
 
