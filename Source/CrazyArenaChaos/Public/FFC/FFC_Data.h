@@ -23,6 +23,7 @@ enum EAIStates : uint8
 	Wait,
 	Look,
 	Strafe,
+	WasHit,
 	Attack
 };
 

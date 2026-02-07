@@ -83,7 +83,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitSystem, impactPoint,ToHit.Rotation());
 	}
-	OnCharacterHit();
+
 
 	if (attributes && attributes->IsAlive())
 	{
@@ -95,7 +95,7 @@ void AEnemy::GetHit(const FVector& impactPoint)
 		CharacterDied();
 	}
 
-
+	OnCharacterHit();
 }
 void AEnemy::CharacterDied()
 {

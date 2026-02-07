@@ -35,6 +35,12 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 	UFUNCTION(BlueprintCallable)
 	void EnableRagdoll();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void OnCharacterDied();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void OnCharacterHit();
+
 	UFUNCTION(BlueprintCallable)
 
 	void DropCurrency();
