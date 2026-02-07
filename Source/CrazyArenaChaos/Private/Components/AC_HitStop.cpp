@@ -62,7 +62,7 @@ void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpe
 	{
 		materialInstance = UKismetMaterialLibrary::CreateDynamicMaterialInstance(world, materialInterface);
 		if(materialInstance!=NULL)
-		materialInstance->SetScalarParameterValue(TEXT("Speed"), 20.f);
+		materialInstance->SetScalarParameterValue(TEXT("Speed"), 5.f);
 
 		CharacterActor->GetMesh()->SetOverlayMaterial(materialInstance);
 	}
