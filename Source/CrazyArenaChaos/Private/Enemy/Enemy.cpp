@@ -63,7 +63,7 @@ void AEnemy::Tick(float DeltaTime)
 
 }
 
-void AEnemy::GetHit(const FVector& impactPoint)
+void AEnemy::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 {
 	CrowdExcitementComponent->OnHit();
 

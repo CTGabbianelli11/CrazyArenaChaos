@@ -36,7 +36,7 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     // Interface overrides
-    virtual void GetHit(const FVector& impectPoint) override;
+    virtual void GetHit(const FVector& impactPoint, const FVector& impactDirection) override;
     virtual void CharacterDied() override;
 
     //Combat Helpers
@@ -94,6 +94,8 @@ protected:
 
     UFUNCTION(BlueprintImplementableEvent)
     void CharacterDiedEvent();
+    UFUNCTION(BlueprintImplementableEvent)
+    void CharacterHit(const FVector& impactPoint, const FVector& impactDirectio);
 
     // Input Callbacks
     void Move(const FInputActionValue& Value);

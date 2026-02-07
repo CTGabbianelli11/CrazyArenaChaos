@@ -272,7 +272,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
         // Post-damage hit reaction
         if (IHitInterface* HitInterface = Cast<IHitInterface>(HitActor))
         {
-            HitInterface->GetHit(BoxHit.ImpactPoint);
+            HitInterface->GetHit(BoxHit.ImpactPoint,BoxHit.ImpactNormal);
         }
 
         ignoreActors.AddUnique(HitActor);

@@ -202,8 +202,9 @@ bool ACPPCharacter::CanAttack()
         && state != ECharacterState::ECS_Unequipped;
 }
 
-void ACPPCharacter::GetHit(const FVector& /*impactPoint*/)
+void ACPPCharacter::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 {
+    CharacterHit(impactPoint, impactDirection);
 }
 
 void ACPPCharacter::CharacterDied()

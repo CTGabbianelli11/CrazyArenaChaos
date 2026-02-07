@@ -23,5 +23,5 @@ class CRAZYARENACHAOS_API IHitInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable)
-	virtual void GetHit(const FVector& impectPoint) = 0;
+	virtual void GetHit(const FVector& impactPoint, const FVector& impactDirection) = 0;
 };
