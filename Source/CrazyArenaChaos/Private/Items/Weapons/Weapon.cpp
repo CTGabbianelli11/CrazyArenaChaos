@@ -284,7 +284,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
         if (Cast<ACPPCharacter>(GetOwner()))
         {
-            Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f,.05,30,1);
+            Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f,.05,30,1,false);
         }
     }
     else

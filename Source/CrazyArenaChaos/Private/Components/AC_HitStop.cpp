@@ -42,7 +42,7 @@ void UAC_HitStop::BeginPlay()
 	
 }
 
-void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpeed,float shakeAmplitude)
+void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpeed,float shakeAmplitude, bool applyMaterial)
 {	
 	Duration = duration;
 	TimeDialation = timeDialation;
@@ -58,7 +58,7 @@ void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpe
 	timerHandle = UKismetSystemLibrary::K2_SetTimerDelegate(MeshShakeStepTimerEvent, ShakeSpeed,true,false);
 
 	UWorld* world = GetWorld();
-	if (world)
+	if (world && applyMaterial)
 	{
 		materialInstance = UKismetMaterialLibrary::CreateDynamicMaterialInstance(world, materialInterface);
 		if(materialInstance!=NULL)

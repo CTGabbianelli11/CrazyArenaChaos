@@ -54,7 +54,7 @@ protected:
 public:	
 
 	UFUNCTION(BlueprintCallable)
-	void BeginHitStop(float duration, float TimeDialation, float ShakeSpeed, float ShakeAmplitude);
+	void BeginHitStop(float duration, float TimeDialation, float ShakeSpeed, float ShakeAmplitude,bool applyMaterial);
 	UFUNCTION(BlueprintCallable)
 	void EndHitStop();
 	UFUNCTION(BlueprintCallable)

@@ -95,7 +95,7 @@ protected:
     UFUNCTION(BlueprintImplementableEvent)
     void CharacterDiedEvent();
     UFUNCTION(BlueprintImplementableEvent)
-    void CharacterHit(const FVector& impactPoint, const FVector& impactDirectio);
+    void CharacterHit(const FVector& impactPoint, const FVector& impactDirection);
 
     // Input Callbacks
     void Move(const FInputActionValue& Value);
