@@ -67,7 +67,7 @@ void AEnemy::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 {
 	CrowdExcitementComponent->OnHit();
 
-	DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
+	//DRAW_SPHERE_COLOR(impactPoint,FColor::Orange);
 
 	const FVector impactLowered(impactPoint.X, impactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (impactLowered - GetActorLocation()).GetSafeNormal();
@@ -190,7 +190,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 {
 	if (attributes)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Example text that prints a float: %f"), DamageAmount), false);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Example text that prints a float: %f"), DamageAmount), false);
 
 		attributes->RecieveDamage(DamageAmount);
 	}

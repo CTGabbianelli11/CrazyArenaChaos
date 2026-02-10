@@ -49,6 +49,7 @@ void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpe
 	ShakeSpeed = 1.f / shakeSpeed;
 	ShakeAmplitude = shakeAmplitude;
 	
+	//slow down speed up or stop character
 	if (CharacterActor)
 		CharacterActor->CustomTimeDilation = TimeDialation;
 
@@ -57,6 +58,7 @@ void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpe
 	hitStopTimerHandle =UKismetSystemLibrary::K2_SetTimerDelegate(hitStopTimerEvent, duration,false,false);
 	timerHandle = UKismetSystemLibrary::K2_SetTimerDelegate(MeshShakeStepTimerEvent, ShakeSpeed,true,false);
 
+	//Set overlay material and give flash
 	UWorld* world = GetWorld();
 	if (world && applyMaterial)
 	{
@@ -92,12 +94,13 @@ void UAC_HitStop::ApplyMeshShakeStep()
 		APlayerController* playerController = UGameplayStatics::GetPlayerController(world,0);
 		if (playerController)
 		{
-
+			//align to camera
 			inverseTransformDirection.X = UKismetMathLibrary::InverseTransformDirection(CharacterActor->GetActorTransform(), playerController->PlayerCameraManager->GetActorRightVector()).X;
 			inverseTransformDirection.Y = UKismetMathLibrary::InverseTransformDirection(CharacterActor->GetActorTransform(), playerController->PlayerCameraManager->GetActorRightVector()).Y;
 
 			FHitResult SweepHitResult;
 
+			//Set shake intensity progress/duration * curve
 			skeletalMesh->K2_SetRelativeLocation(MeshRelativeLocation + inverseTransformDirection * (ShakeAmplitude * offsetDirection)* GetFloatFromCurve(), false, SweepHitResult, true);
 		}
 
