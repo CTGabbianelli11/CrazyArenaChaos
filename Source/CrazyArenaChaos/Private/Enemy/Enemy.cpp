@@ -44,7 +44,7 @@ void AEnemy::PlayHitReactMontage(const FName& sectionName)
 	{
 		AnimInstance->Montage_Play(HitReactMontage);
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, sectionName.ToString(), false);
 		AnimInstance->Montage_JumpToSection(sectionName, HitReactMontage);
 	}
 }

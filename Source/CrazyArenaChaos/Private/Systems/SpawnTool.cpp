@@ -84,8 +84,8 @@ bool ASpawnTool::AlignToGround(FVector& InOut, FRotator& OutRot) const
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_WorldStatic, Params))
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.f);
-		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 50.f, 12, FColor::Green, false, 10.f);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.f);
+		//DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 50.f, 12, FColor::Green, false, 10.f);
 		InOut = Hit.ImpactPoint; OutRot = Hit.ImpactNormal.Rotation(); return true;
 	}
 	return false;
