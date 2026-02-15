@@ -19,6 +19,7 @@
 #include "CrazyArenaChaos/DebugMacros.h"
 #include <Components/TimelineComponent.h>
 #include <Components/AC_HitStop.h>
+#include <Enemy/Enemy.h>
 
 ACPPCharacter::ACPPCharacter()
 {
@@ -92,7 +93,7 @@ void ACPPCharacter::Interact(const FInputActionValue& /*Value*/)
 {
     if (AWeapon* overlappingWeapon = Cast<AWeapon>(overlappingItem))
     {
-        EquipExistingWeapon(overlappingWeapon);
+        //EquipExistingWeapon(overlappingWeapon);
     }
 }
 
@@ -130,7 +131,7 @@ AWeapon* ACPPCharacter::BP_SpawnWeaponFromDataAsset(UWeaponDataAsset* Config, bo
 
     if (bEquipNow)
     {
-        EquipExistingWeapon(NewWeapon);
+        //EquipExistingWeapon(NewWeapon);
     }
 
     return NewWeapon;
@@ -157,7 +158,7 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
                     EDrawDebugTrace::None,
                     Hit,
                     true);
-                if (Hit.GetActor())
+                if (Hit.GetActor() && Cast<AEnemy>(Hit.GetActor()))
                 {
                     ActorsInFront.AddUnique(Hit.GetActor());
                     //DRAW_SPHERE_COLOR(Hit.GetActor()->GetActorLocation(), FColor::Orange);
