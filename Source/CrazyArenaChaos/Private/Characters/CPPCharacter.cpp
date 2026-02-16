@@ -229,6 +229,7 @@ void ACPPCharacter::MovePlayerToEnemy(AActor* player, AActor* enemy)
     FVector magnitude = direction * 150.f;
 
     FVector positionOffset = magnitude + enemy->GetActorLocation();
+    positionOffset.Z = GetActorLocation().Z;
 
     FRotator forwardRotation = UKismetMathLibrary::FindLookAtRotation(player->GetActorLocation(), enemy->GetActorLocation());
 
