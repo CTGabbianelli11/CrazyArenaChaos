@@ -35,6 +35,8 @@ AEnemy::AEnemy()
 
 	attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 	CrowdExcitementComponent = CreateDefaultSubobject<UCrowdExcitementComponent>(TEXT("Crowd Excitement"));
+
+
 }
 
 void AEnemy::PlayHitReactMontage(const FName& sectionName)
@@ -53,6 +55,13 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * attributes->GetSpeed();
+
+	CustomTimeDilation = attributes->GetSpeed();
+
+	if (hitStopComponent)
+		hitStopComponent->SetStartTimeDilation(CustomTimeDilation);
+
 }
 
 

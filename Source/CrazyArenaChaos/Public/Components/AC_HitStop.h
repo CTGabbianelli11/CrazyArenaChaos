@@ -48,11 +48,14 @@ protected:
 	float ShakeAmplitude = 20;
 	float offsetDirection = 1;
 	float TimeDialation = 1;
+	float StartTimeDialation = 1;
 	float ShakeSpeed = 1;
 
 	UMaterialInstanceDynamic* materialInstance;
 public:	
 
+	UFUNCTION(BlueprintCallable)
+	void SetStartTimeDilation(float startTimeDialation);
 	UFUNCTION(BlueprintCallable)
 	void BeginHitStop(float duration, float TimeDialation, float ShakeSpeed, float ShakeAmplitude,bool applyMaterial);
 	UFUNCTION(BlueprintCallable)

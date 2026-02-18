@@ -42,7 +42,7 @@ void UAC_HitStop::BeginPlay()
 
 void UAC_HitStop::SetStartTimeDilation(float startTimeDialation)
 {
-	StartTimeDialation = startTimeDialation;
+	startTimeDialation = startTimeDialation;
 }
 
 void UAC_HitStop::BeginHitStop(float duration,float timeDialation,float shakeSpeed,float shakeAmplitude, bool applyMaterial)
