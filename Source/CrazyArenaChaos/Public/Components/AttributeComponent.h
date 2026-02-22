@@ -33,6 +33,10 @@ private:
 	int health = 100;
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	int maxHealth =100;
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	float size = 1;
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	float damage = 1;
 
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	int32 Currency = 0;
@@ -41,6 +45,9 @@ public:
 	void RecieveDamage(float _damage);
 	float GetHealthPercentage();
 	float GetSpeed() { return speed; };
+	float GetSize() { return size; };
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetDamage() { return damage; };
 	bool IsAlive();
 	UFUNCTION(BlueprintCallable)
 	void ApplyHealthMultiplier();

@@ -59,6 +59,8 @@ void AEnemy::BeginPlay()
 
 	CustomTimeDilation = attributes->GetSpeed();
 
+	SetActorScale3D(FVector::One() * attributes->GetSize());
+
 	if (hitStopComponent)
 		hitStopComponent->SetStartTimeDilation(CustomTimeDilation);
 
