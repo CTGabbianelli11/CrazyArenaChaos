@@ -47,7 +47,7 @@ public:
 	float GetSpeed() { return speed; };
 	float GetSize() { return size; };
 	UFUNCTION(BlueprintCallable,BlueprintPure)
-	float GetDamage() { return damage; };
+	FORCEINLINE float GetDamage() const { return damage; };
 	bool IsAlive();
 	UFUNCTION(BlueprintCallable)
 	void ApplyHealthMultiplier();
