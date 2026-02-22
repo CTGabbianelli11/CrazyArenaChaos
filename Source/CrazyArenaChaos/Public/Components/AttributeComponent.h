@@ -45,7 +45,8 @@ public:
 	void RecieveDamage(float _damage);
 	float GetHealthPercentage();
 	float GetSpeed() { return speed; };
-	float GetSize() { return size; };
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE float GetSize() const { return size; };
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FORCEINLINE float GetDamage() const { return damage; };
 	bool IsAlive();
