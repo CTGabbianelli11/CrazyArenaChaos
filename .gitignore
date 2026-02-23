@@ -86,3 +86,6 @@ Platforms/HoloLens/Config/HoloLensEngine.ini
 
 # Blender backup files
 *.blend[0-9]
+
+#Allow 
+!Binaries/Win64/CrazyArenaChaosEditor.target
