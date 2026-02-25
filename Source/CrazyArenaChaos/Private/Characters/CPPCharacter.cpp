@@ -67,6 +67,9 @@ void ACPPCharacter::BeginPlay()
 
 void ACPPCharacter::Move(const FInputActionValue& Value)
 {
+    if (actionState != EactionState::EAS_Unoccupied)
+        return;
+
     const FVector2D movementVector = Value.Get<FVector2D>();
     const FRotator controlRotation = GetControlRotation();
     const FRotator YawRotation(0.f, controlRotation.Yaw, 0.f);
@@ -174,6 +177,29 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
         PlayAttackMontage();
         actionState = EactionState::EAS_Attacking;
     }
+}
+
+void ACPPCharacter::Dodge(const FInputActionValue& Value)
+{
+    if (actionState == EactionState::EAS_Dodging)
+        return;
+    actionState = EactionState::EAS_Dodging;
+
+    if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+    {
+        AnimInstance->Montage_Play(DodgeMontage);
+        StartDodge();
+    }
+}
+
+void ACPPCharacter::StartDodge()
+{
+
+}
+
+void ACPPCharacter::EndDodge()
+{
+    actionState = EactionState::EAS_Unoccupied;
 }
 
 
@@ -294,6 +320,7 @@ void ACPPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Jump);
         EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Interact);
         EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Attack);
+        EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACPPCharacter::Dodge);
     }
 }
 

@@ -11,4 +11,6 @@ enum class EactionState : uint8
 	EAS_Unoccupied UMETA(DisplayName = "Unoccupied"),
 	EAS_Attacking UMETA(DisplayName = "Attacking"),
 	EAS_Comboing UMETA(DisplayName = "Comboing"),
+	EAS_Dodging UMETA(DisplayName = "Dodging"),
+
 };

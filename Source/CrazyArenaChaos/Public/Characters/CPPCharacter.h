@@ -87,6 +87,8 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
     UInputAction* AttackAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+    UInputAction* DodgeAction;
 
 
 
@@ -104,14 +106,20 @@ protected:
 
     void EquipWeapon(AWeapon* overlappingWeapon);
     void Attack(const FInputActionValue& Value);
+    void Dodge(const FInputActionValue& Value);
+
 
     void PlayAttackMontage();
 
-protected:
+protected: 
+    UFUNCTION(BlueprintCallable) void StartInputBuffer();   
     UFUNCTION(BlueprintCallable) void AttackEnd();
-    UFUNCTION(BlueprintCallable) void StartInputBuffer();
     UFUNCTION(BlueprintCallable) void EndBuffer();
     UFUNCTION(BlueprintCallable) FName GetCurrentAttack();
+
+    UFUNCTION(BlueprintCallable) void StartDodge();
+    UFUNCTION(BlueprintCallable) void EndDodge();
+
     bool CanAttack();
 
 private:
@@ -134,6 +142,8 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Montages")
     UAnimMontage* AttackMontage;
+    UPROPERTY(EditDefaultsOnly, Category = "Montages")
+    UAnimMontage* DodgeMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "Montages")
     UAnimMontage* HitReactMontage;
