@@ -67,12 +67,13 @@ void ACPPCharacter::BeginPlay()
 
 void ACPPCharacter::Move(const FInputActionValue& Value)
 {
+
+    movementVector = Value.Get<FVector2D>();
+    const FRotator controlRotation = GetControlRotation();
+    YawRotation = FRotator(0.f, controlRotation.Yaw, 0.f);
+
     if (actionState != EactionState::EAS_Unoccupied)
         return;
-
-    const FVector2D movementVector = Value.Get<FVector2D>();
-    const FRotator controlRotation = GetControlRotation();
-    const FRotator YawRotation(0.f, controlRotation.Yaw, 0.f);
 
     AddMovementInput(
         FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X),
@@ -183,7 +184,14 @@ void ACPPCharacter::Dodge(const FInputActionValue& Value)
 {
     if (actionState == EactionState::EAS_Dodging)
         return;
+    if (actionState == EactionState::EAS_Comboing || actionState == EactionState::EAS_Attacking)
+        AttackEnd();
+
+
     actionState = EactionState::EAS_Dodging;
+
+
+    SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
 
     if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
     {

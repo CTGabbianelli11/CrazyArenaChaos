@@ -111,6 +111,9 @@ protected:
 
     void PlayAttackMontage();
 
+    FVector2D movementVector;
+    FRotator YawRotation;
+
 protected: 
     UFUNCTION(BlueprintCallable) void StartInputBuffer();   
     UFUNCTION(BlueprintCallable) void AttackEnd();
