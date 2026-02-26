@@ -219,6 +219,11 @@ void AEnemy::EnableRagdoll()
 
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+	// Prevent ragdolled enemy meshes from interfering with the player camera by setting their response to the camera collision channel to 'ignore'.
+	// This ensures the camera can move freely near ragdoll meshes without being blocked.
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
 	GetMesh()->AddImpulse((character->GetActorForwardVector() * 200000.f)+FVector::UpVector*20000.f);
 	}
 
