@@ -17,29 +17,29 @@
 #include "NiagaraComponent.h"
 #include "Components/AC_HitStop.h"
 #include "NiagaraFunctionLibrary.h"
-
+#include "Misc/ConfigCacheIni.h"
 
 
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
 	/*
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	*/
-	
-	// [TwstdTree] Set the mesh's collision profile to "EnemyMesh"
-	GetMesh()->SetCollisionProfileName(TEXT("EnemyMesh"));
+
+
+	// [TwstdTree] Set mesh/capsule collision profile using config-driven name from DefaultGame.ini.
+	// Prevents errors caused by preset name changes in Project Settings.
+	FString MeshProfileName, CapsuleProfileName;
+	GConfig->GetString(TEXT("Game.CollisionProfiles"), TEXT("EnemyMeshProfile"), MeshProfileName, GGameIni);
+	GetMesh()->SetCollisionProfileName(FName(*MeshProfileName));
 	GetMesh()->SetGenerateOverlapEvents(true);
-
-	// [TwstdTree] Set the capsule's collision profile to "EnemyCapsule"
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("EnemyCapsule"));
+	GConfig->GetString(TEXT("Game.CollisionProfiles"), TEXT("EnemyCapsuleProfile"), CapsuleProfileName, GGameIni);
+	GetCapsuleComponent()->SetCollisionProfileName(*CapsuleProfileName);
 	
-	
-
 	hitStopComponent = CreateDefaultSubobject<UAC_HitStop>(TEXT("HitStop"));
 
 	attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
