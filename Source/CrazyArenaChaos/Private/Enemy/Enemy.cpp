@@ -23,13 +23,22 @@
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	/*
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	*/
+	
+	// [TwstdTree] Set the mesh's collision profile to "EnemyMesh"
+	GetMesh()->SetCollisionProfileName(TEXT("EnemyMesh"));
 	GetMesh()->SetGenerateOverlapEvents(true);
 
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	// [TwstdTree] Set the capsule's collision profile to "EnemyCapsule"
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("EnemyCapsule"));
+	
+	
 
 	hitStopComponent = CreateDefaultSubobject<UAC_HitStop>(TEXT("HitStop"));
 
