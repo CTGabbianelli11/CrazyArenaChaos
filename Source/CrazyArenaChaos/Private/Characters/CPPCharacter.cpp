@@ -145,6 +145,8 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
 {
     if (CanAttack())
     {
+        SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
+
         TArray<AActor*> ActorsInFront;
         FHitResult Hit;
         UWorld* world = GetWorld();
