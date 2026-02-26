@@ -18,6 +18,11 @@ void UCrazyArenaChaosGameInstance::ResetAttributes()
     playerPersistingAttributes = DefaultPlayerAttributes;
 }
 
+void UCrazyArenaChaosGameInstance::ResetEnemies()
+{
+    EnemiesToBeDefeated.Empty();
+}
+
 void UCrazyArenaChaosGameInstance::RegisterShopActor(UActorComponent* InShop)
 {
     if (IsValid(InShop))

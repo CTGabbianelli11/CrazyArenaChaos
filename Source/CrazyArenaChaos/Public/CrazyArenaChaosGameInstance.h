@@ -52,6 +52,8 @@ public:
     /** Resets the persistent data to initial values. */
     UFUNCTION(BlueprintCallable, Category = "Persistent Data")
     void ResetAttributes();
+    UFUNCTION(BlueprintCallable, Category = "Persistent Data")
+    void ResetEnemies();
 
     // -------------------- Shop Registration & Access --------------------
     /** Called by BP_Shop at runtime to register itself with the GameInstance. */
