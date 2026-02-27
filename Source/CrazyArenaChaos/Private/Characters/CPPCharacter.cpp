@@ -154,11 +154,14 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
         {
             for (int i = -10; i < 10; i++)
             {
-                UKismetSystemLibrary::LineTraceSingle(
+                // [TwstdTree] Convert ECC_GameTraceChannel1 to EObjectTypeQuery
+                TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+                ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel1));
+                UKismetSystemLibrary::LineTraceSingleForObjects(
                     world,
                     GetActorLocation(),
                     GetActorLocation() + UKismetMathLibrary::GreaterGreater_VectorRotator(GetActorForwardVector(), FRotator(0, 5 * i, 0)) * 400.f,
-                    ETraceTypeQuery::TraceTypeQuery1,
+                     ObjectTypes,
                     false,
                     ActorsInFront,
                     EDrawDebugTrace::None,

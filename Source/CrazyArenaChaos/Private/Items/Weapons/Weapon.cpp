@@ -31,7 +31,10 @@ AWeapon::AWeapon()
     WeaponBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box Collider"));
     WeaponBoxComponent->SetupAttachment(ScaleContainer);
     WeaponBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    WeaponBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+
+    // [TwstdTree] set collisions to Enemy Collision Channel only
+    WeaponBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    WeaponBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap);
     WeaponBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
     BoxTraceStart = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace Start"));
@@ -244,13 +247,17 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
     FHitResult BoxHit;
     const FVector HalfSize(10.f, 10.f, 10.f);
-    UKismetSystemLibrary::BoxTraceSingle(
+
+    // [TwstdTree] Convert ECC_GameTraceChannel1 to EObjectTypeQuery
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel1));
+     UKismetSystemLibrary::BoxTraceSingleForObjects(
         this,
         Start,
         End,
         HalfSize,
         BoxTraceStart ? BoxTraceStart->GetComponentRotation() : FRotator::ZeroRotator,
-        ETraceTypeQuery::TraceTypeQuery1,
+        ObjectTypes,
         false,
         ActorsToIgnore,
         EDrawDebugTrace::None,
