@@ -272,7 +272,12 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
         // Post-damage hit reaction
         if (IHitInterface* HitInterface = Cast<IHitInterface>(HitActor))
         {
-            HitInterface->GetHit(BoxHit.ImpactPoint,BoxHit.ImpactNormal);
+            HitInterface->GetHit(BoxHit.ImpactPoint,BoxHit.ImpactNormal); 
+            
+            if (Cast<ACPPCharacter>(GetOwner()))
+            {
+                Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f,.05,30,1,false);
+            }
         }
 
         ignoreActors.AddUnique(HitActor);
@@ -282,10 +287,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
             UGameplayStatics::PlaySoundAtLocation(this, HitSound, BoxHit.ImpactPoint, 1.f, 1.f, 0.1f);
         }
 
-        if (Cast<ACPPCharacter>(GetOwner()))
-        {
-            Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f,.05,30,1,false);
-        }
+
     }
     else
     {

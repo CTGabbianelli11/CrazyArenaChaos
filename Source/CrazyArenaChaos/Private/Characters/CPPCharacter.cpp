@@ -145,7 +145,7 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
 {
     if (CanAttack())
     {
-        SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
+
 
         TArray<AActor*> ActorsInFront;
         FHitResult Hit;
@@ -175,6 +175,10 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
         if (ActorsInFront.Num() > 0)
         {
             MovePlayerToEnemy(this, ActorsInFront[0]);
+        }
+        else
+        {
+            //SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
         }
 
         PlayAttackMontage();

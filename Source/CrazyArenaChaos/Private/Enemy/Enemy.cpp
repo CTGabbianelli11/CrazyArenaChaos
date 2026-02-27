@@ -119,11 +119,10 @@ void AEnemy::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 }
 void AEnemy::CharacterDied()
 {
-	DetachFromControllerPendingDestroy();
+	if(GetController())
+	GetController()->UnPossess();
 
-	GetMesh()->SetAnimInstanceClass(nullptr);
-
-
+	StopAnimMontage();
 
 	EnableRagdoll();
 
