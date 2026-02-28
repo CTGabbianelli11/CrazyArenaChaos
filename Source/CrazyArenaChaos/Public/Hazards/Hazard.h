@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/HazardInterface.h"
 #include "Hazard.generated.h"
+
 
 
 UENUM(BlueprintType)
@@ -26,7 +28,7 @@ enum class EHazardType : uint8
 class UCapsuleComponent;
 
 UCLASS()
-class CRAZYARENACHAOS_API AHazard : public AActor
+class CRAZYARENACHAOS_API AHazard : public AActor,public IHazardInterface
 {
 	GENERATED_BODY()
 	
@@ -34,6 +36,18 @@ public:
 	// Sets default values for this actor's properties
 	AHazard();
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void HazardEnabled();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void HazardDisabled();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void EnableHazard() override;
+	UFUNCTION(BlueprintCallable)
+	virtual void DisableHazard() override;
+
+
 
 protected:
 	// Called when the game starts or when spawned

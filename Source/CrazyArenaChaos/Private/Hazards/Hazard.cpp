@@ -41,3 +41,13 @@ void AHazard::Tick(float DeltaTime)
 
 }
 
+void AHazard::EnableHazard()
+{
+	HazardEnabled();
+}
+
+void AHazard::DisableHazard()
+{
+	HazardDisabled();
+}
+
