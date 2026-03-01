@@ -103,7 +103,7 @@ void AEnemy::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitSystem, impactPoint,ToHit.Rotation());
 	}
-	OnCharacterHit();
+	OnCharacterHit(impactPoint,ToHit);
 
 	if (attributes && attributes->IsAlive())
 	{
@@ -139,11 +139,17 @@ void AEnemy::CharacterDied()
 }
 void AEnemy::DropCurrency()
 {
+	if (attributes->GetCurrency() <= 0)
+		return;
+
 	UWorld* World = GetWorld();
 	if (World && CurrencyToDrop)
 	{
 		FVector location = GetActorLocation();
 		location.Z += 25.f;
+
+		attributes->AddCurrency(-1);
+
 		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
 	}
 }

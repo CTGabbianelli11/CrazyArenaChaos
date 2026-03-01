@@ -39,7 +39,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
 	void OnCharacterDied();
 	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
-	void OnCharacterHit();
+	void OnCharacterHit(FVector ImpactPoint,FVector ImpactDirection);
 
 	UFUNCTION(BlueprintCallable)
 
