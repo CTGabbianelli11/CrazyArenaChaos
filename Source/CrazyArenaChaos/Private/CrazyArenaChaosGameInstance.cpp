@@ -49,6 +49,8 @@ void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
     if (EnemiesToBeDefeated.Contains(Enemy))
     {
         EnemiesToBeDefeated.Remove(Enemy);
+        EnemyRemoved.Broadcast();
+        EnemyRemovedEvent();
     }
     else
     {
