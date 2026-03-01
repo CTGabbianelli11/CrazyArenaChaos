@@ -12,6 +12,9 @@ class AEnemy;
 /** Broadcast when all enemies in the wave are defeated */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAllEnemiesDefeated);
 
+/** Bradcast when an enemy is removed */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyRemoved);
+
 UCLASS()
 class CRAZYARENACHAOS_API UCrazyArenaChaosGameInstance : public UGameInstance
 {
@@ -87,6 +90,12 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent)
     void AllEnemiesDefeatedEvent();
+
+    UPROPERTY(BlueprintAssignable)
+    FEnemyRemoved EnemyRemoved;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void EnemyRemovedEvent();
 
     UFUNCTION(BlueprintImplementableEvent)
     void PlayerDiedEvent();
