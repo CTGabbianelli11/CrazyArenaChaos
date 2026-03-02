@@ -255,7 +255,7 @@ void ACPPCharacter::GetHit(const FVector& impactPoint, const FVector& impactDire
         if (HitReactMontage)
         {
             AnimInstance->Montage_Play(HitReactMontage);
-            actionState == EactionState::EAS_Unoccupied;
+            actionState = EactionState::EAS_Unoccupied;
         }
     }
 }
