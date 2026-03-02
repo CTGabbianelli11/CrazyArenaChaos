@@ -249,6 +249,15 @@ bool ACPPCharacter::CanAttack()
 void ACPPCharacter::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 {
     CharacterHit(impactPoint, impactDirection);
+
+    if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+    {
+        if (HitReactMontage)
+        {
+            AnimInstance->Montage_Play(HitReactMontage);
+            actionState == EactionState::EAS_Unoccupied;
+        }
+    }
 }
 
 void ACPPCharacter::CharacterDied()
