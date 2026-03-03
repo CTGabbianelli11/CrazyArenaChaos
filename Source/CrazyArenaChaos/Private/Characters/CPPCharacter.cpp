@@ -184,6 +184,8 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
             //SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
         }
 
+        equippedWeapon->ignoreActors.Empty();
+
         PlayAttackMontage();
         actionState = EactionState::EAS_Attacking;
     }
@@ -355,7 +357,7 @@ void ACPPCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionE
     if (equippedWeapon && equippedWeapon->GetWeaponBoxComponent())
     {
         equippedWeapon->GetWeaponBoxComponent()->SetCollisionEnabled(CollisionEnabled);
-        equippedWeapon->ignoreActors.Empty();
+        //equippedWeapon->ignoreActors.Empty();
     }
 }
 
