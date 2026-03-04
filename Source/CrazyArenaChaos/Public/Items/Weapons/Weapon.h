@@ -204,6 +204,8 @@ private:
     USoundBase* MissSoundEffect = nullptr;
 
     // ===== Config copied from Data Asset (immutable origin, mutable here) =====
+    UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Weapon|Config", meta = (AllowPrivateAccess = "true"))
+    float  KnockBackAmount = 10.0f;
     UPROPERTY(BlueprintReadOnly, Category = "Weapon|Config", meta = (AllowPrivateAccess = "true"))
     float  BaseDamageCached = 10.0f;
 

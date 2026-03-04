@@ -281,6 +281,17 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
         {
             HitInterface->GetHit(BoxHit.ImpactPoint,BoxHit.ImpactNormal); 
             
+            if (Cast<ACharacter>(HitActor))
+            {
+                ACharacter* HitCharcter = Cast<ACharacter>(HitActor);
+
+                FVector DirectionFromWeaponHolder = HitActor->GetActorLocation() - GetOwner()->GetActorLocation();
+                DirectionFromWeaponHolder.Z = 0;
+                DirectionFromWeaponHolder *= KnockBackAmount;
+
+                HitCharcter->LaunchCharacter(DirectionFromWeaponHolder,false,false);
+            }
+
             if (Cast<ACPPCharacter>(GetOwner()))
             {
                 Cast<ACPPCharacter>(GetOwner())->hitStopComponent->BeginHitStop(.15f,.05,30,1,false);
