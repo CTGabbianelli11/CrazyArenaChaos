@@ -246,7 +246,8 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
     }
 
     FHitResult BoxHit;
-    const FVector HalfSize = WeaponBoxComponent->GetScaledBoxExtent();
+    FVector HalfSize = WeaponBoxComponent->GetScaledBoxExtent();
+    HalfSize.Z = 10.f;
 
     // [TwstdTree] Convert ECC_GameTraceChannel1 to EObjectTypeQuery
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;

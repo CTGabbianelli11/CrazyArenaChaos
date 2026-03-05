@@ -67,6 +67,8 @@ void ACPPCharacter::BeginPlay()
 
 void ACPPCharacter::Move(const FInputActionValue& Value)
 {
+    if(GetCharacterMovement()->RotationRate == FRotator(0, 50000, 0))
+    GetCharacterMovement()->RotationRate = FRotator(0, 400, 0);
 
     movementVector = Value.Get<FVector2D>();
     const FRotator controlRotation = GetControlRotation();
@@ -146,6 +148,17 @@ void ACPPCharacter::Attack(const FInputActionValue& /*Value*/)
     if (CanAttack())
     {
 
+        GetCharacterMovement()->RotationRate = FRotator(0, 50000, 0);
+
+        AddMovementInput(
+            FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X),
+            movementVector.Y
+        );
+
+        AddMovementInput(
+            FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y),
+            movementVector.X
+        );
 
         TArray<AActor*> ActorsInFront;
         FHitResult Hit;
@@ -201,8 +214,17 @@ void ACPPCharacter::Dodge(const FInputActionValue& Value)
 
     actionState = EactionState::EAS_Dodging;
 
+    GetCharacterMovement()->RotationRate = FRotator(0, 50000, 0);
 
-    SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
+    AddMovementInput(
+        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X),
+        movementVector.Y
+    );
+
+    AddMovementInput(
+        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y),
+        movementVector.X
+    );
 
     if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
     {
