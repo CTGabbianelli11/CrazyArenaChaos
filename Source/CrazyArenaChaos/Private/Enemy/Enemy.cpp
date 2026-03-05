@@ -110,10 +110,7 @@ void AEnemy::GetHit(const FVector& impactPoint, const FVector& impactDirection)
 		hitStopComponent->BeginHitStop(.2f,0,30,20,true);
 		DirectionalHitReact(impactPoint,ToHit);
 	}
-	else if (attributes)
-	{
-		CharacterDied();
-	}
+
 
 
 }
@@ -218,6 +215,11 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Example text that prints a float: %f"), DamageAmount), false);
 
 		attributes->RecieveDamage(DamageAmount);
+
+		if (!attributes->IsAlive())
+		{
+			CharacterDied();
+		}
 	}
 	return DamageAmount;
 }
@@ -238,6 +240,7 @@ void AEnemy::EnableRagdoll()
 	// This ensures the camera can move freely near ragdoll meshes without being blocked.
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
+	if(character)
 	GetMesh()->AddImpulse((character->GetActorForwardVector() * 200000.f)+FVector::UpVector*20000.f);
 	}
 

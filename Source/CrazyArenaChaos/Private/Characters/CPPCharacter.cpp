@@ -214,17 +214,8 @@ void ACPPCharacter::Dodge(const FInputActionValue& Value)
 
     actionState = EactionState::EAS_Dodging;
 
-    GetCharacterMovement()->RotationRate = FRotator(0, 50000, 0);
 
-    AddMovementInput(
-        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X),
-        movementVector.Y
-    );
-
-    AddMovementInput(
-        FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y),
-        movementVector.X
-    );
+    SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(GetLastMovementInputVector()));
 
     if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
     {
