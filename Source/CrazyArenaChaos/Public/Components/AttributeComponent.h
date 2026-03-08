@@ -43,6 +43,8 @@ private:
 
 public:
 	void RecieveDamage(float _damage);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+
 	float GetHealthPercentage();
 	float GetSpeed() { return speed; };
 	UFUNCTION(BlueprintCallable, BlueprintPure)
