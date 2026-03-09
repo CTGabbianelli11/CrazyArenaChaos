@@ -30,14 +30,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "VisualStudioTools",
-			"Enabled": false,
-			"SupportedTargetPlatforms": [
-				"Win64"
-			],
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2"
-		},
-		{
 			"Name": "PCGGeometryScriptInterop",
 			"Enabled": true
 		},
@@ -52,6 +44,18 @@
 		{
 			"Name": "VisualStudioSourceCodeAccess",
 			"Enabled": false
+		},
+		{
+			"Name": "VisualStudioTools",
+			"Enabled": false,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2",
+			"SupportedTargetPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "Soundscape",
+			"Enabled": true
 		}
 	]
 }
