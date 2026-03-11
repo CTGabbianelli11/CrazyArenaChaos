@@ -121,6 +121,8 @@ void AEnemy::CharacterDied()
 
 	StopAnimMontage();
 
+	Mesh->SetAnimInstanceClass(nullptr);
+
 	EnableRagdoll();
 
 	if (UCrazyArenaChaosGameInstance* instance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()))
