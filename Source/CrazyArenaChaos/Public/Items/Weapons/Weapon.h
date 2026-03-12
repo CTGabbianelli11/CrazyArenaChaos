@@ -99,6 +99,8 @@ public:
     bool IsPurchased() const { return bPurchased; }
 
     /** Current (level-scaled) price using your formula. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Config", meta = (AllowPrivateAccess = "true"))
+    float  KnockBackAmount = 10.0f;
     UFUNCTION(BlueprintPure, Category = "Weapon|Economy")
     int32 GetPrice() const;
 
@@ -204,8 +206,7 @@ private:
     USoundBase* MissSoundEffect = nullptr;
 
     // ===== Config copied from Data Asset (immutable origin, mutable here) =====
-    UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Weapon|Config", meta = (AllowPrivateAccess = "true"))
-    float  KnockBackAmount = 10.0f;
+
     UPROPERTY(BlueprintReadOnly, Category = "Weapon|Config", meta = (AllowPrivateAccess = "true"))
     float  BaseDamageCached = 10.0f;
 

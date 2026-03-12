@@ -44,6 +44,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 
 	void DropCurrency();
+
+	UAttributeComponent* GetAttributes() { return attributes; }
 	/**
 Play montage functions
 */

@@ -121,7 +121,7 @@ void AEnemy::CharacterDied()
 
 	StopAnimMontage();
 
-	Mesh->SetAnimInstanceClass(nullptr);
+	GetMesh()->SetAnimInstanceClass(nullptr);
 
 	EnableRagdoll();
 

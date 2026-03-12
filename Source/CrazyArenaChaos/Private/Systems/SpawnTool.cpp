@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "CrazyArenaChaosGameInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AttributeComponent.h"
 #include "Interfaces/Spawnable.h"
 
 ASpawnTool::ASpawnTool()
@@ -181,7 +182,7 @@ void ASpawnTool::SpawnAll()
 
 				if (Cast<AEnemy>(NewA))
 				{
-					if (Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()))
+					if (Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()) && Cast<AEnemy>(NewA)->GetAttributes()->IsAlive())
 						Cast<UCrazyArenaChaosGameInstance>(GetGameInstance())->AddEnemy(Cast<AEnemy>(NewA));
 				}
 			}
