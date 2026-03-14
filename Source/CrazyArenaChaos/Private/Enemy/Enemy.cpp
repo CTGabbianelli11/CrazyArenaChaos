@@ -121,8 +121,6 @@ void AEnemy::CharacterDied()
 
 	StopAnimMontage();
 
-	GetMesh()->SetAnimInstanceClass(nullptr);
-
 	EnableRagdoll();
 
 	if (UCrazyArenaChaosGameInstance* instance = Cast<UCrazyArenaChaosGameInstance>(GetGameInstance()))
@@ -134,6 +132,8 @@ void AEnemy::CharacterDied()
 
 	OnCharacterDied();
 
+	GetMesh()->SetAnimInstanceClass(nullptr);
+	
 	CrowdExcitementComponent->OnKill();
 }
 void AEnemy::DropCurrency()
