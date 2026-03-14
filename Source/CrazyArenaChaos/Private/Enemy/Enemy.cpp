@@ -149,7 +149,7 @@ void AEnemy::DropCurrency()
 
 		attributes->AddCurrency(-1);
 
-		World->SpawnActor<ACurrency>(CurrencyToDrop, location, GetActorRotation());
+		World->SpawnActor<AActor>(CurrencyToDrop, location, GetActorRotation());
 	}
 }
 void AEnemy::DirectionalHitReact(const FVector& impactPoint,const FVector impactDirection)
