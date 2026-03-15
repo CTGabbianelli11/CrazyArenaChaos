@@ -162,7 +162,17 @@ void ASpawnTool::SpawnAll()
 				FVector NavLoc;
 				const bool bCanProjectLocToNav = UNavigationSystemV1::K2_ProjectPointToNavigation(this, Loc, NavLoc, nullptr, nullptr, NavQueryExtent);
 				Loc = bCanProjectLocToNav ? NavLoc : Loc;
-				const float AgentHeight = AsCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+				float AgentHeight;
+
+				if (!AsCharacter->GetComponentByClass<UAttributeComponent>()) 
+				{
+					AgentHeight = AsCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				}
+				else
+				{
+					 AgentHeight = AsCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()* AsCharacter->GetComponentByClass<UAttributeComponent>()->GetSize();
+				}
 				Loc.Z += AgentHeight;
 			}
 
