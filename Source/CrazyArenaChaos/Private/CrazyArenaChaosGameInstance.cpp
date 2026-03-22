@@ -56,7 +56,7 @@ void UCrazyArenaChaosGameInstance::RemoveEnemy(AEnemy* Enemy)
     {
         if (GEngine)
         {
-            GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Cyan, TEXT("Enemy not found in list"));
+            //GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Cyan, TEXT("Enemy not found in list"));
         }
     }
 
